@@ -149,7 +149,7 @@ validate:docker:
     - test -f ./Dockerfile && echo "[OK] ✓ Dockerfile encontrado"
     - docker run --rm -i hadolint/hadolint < ./Dockerfile && echo "[OK] ✓ Dockerfile lint passed" || true
 
-STAGE: Tests
+# STAGE: Tests
 tests:unit:
   stage: tests
   image: ${BASE_IMAGE}
