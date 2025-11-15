@@ -6,3 +6,5 @@ data:
   .env: |
     MESSAGE="Serviço Seleções."
     LOG_LEVEL="info"
+    VITE_API_URL=http://localhost:8000
+    VITE_API_BASE_URL=http://localhost:8000/api
