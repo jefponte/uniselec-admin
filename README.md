@@ -77,3 +77,18 @@ O que eu consigo fazer em pouco tempo:
             https://uniselec-api.jefponte.com
 
             https://uniselec-api-staging.jefponte.com
+
+## Segredos (Sealed Secrets)
+```sh
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.33.1/controller.yaml
+kubeseal -f regcred-secret.yaml -w base/sealed-secret-regcred.yaml --scope cluster-wide
+kubeseal --validate < base/sealed-secret-regcred.yaml
+```
+### Desprovisionar Deploy
+```sh
+argocd login argocd.unilab.edu.br --username admin --password "pass" --grpc-web
+argocd app list
+kubectl -n argocd patch applicationset APPLICATION-NAME-stg-as --type='merge' -p '{"spec":{"generators":[{"list":{"elements":[]}}]}}'
+argocd app list | grep APPLICATION-NAME-stg
+```
+

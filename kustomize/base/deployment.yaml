@@ -8,7 +8,6 @@ spec:
   selector:
     matchLabels:
       app: uniselec-admin
-  replicas: 1
   template:
     metadata:
       labels:

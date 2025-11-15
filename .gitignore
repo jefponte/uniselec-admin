@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 .firebase/*
 .env
+kustomize/base/secret-regcred.yaml
