@@ -11,7 +11,16 @@ resources:
 patches:
 - path: patch-deployment.yaml
 - path: patch-ingress.yaml
-- path: patch-hpa.yaml 
+- path: patch-hpa.yaml
+
+configMapGenerator:
+- name: uniselec-admin-config
+  behavior: merge
+  literals:
+  - MESSAGE=Serviço Seleções - Admin Production
+  - LOG_LEVEL=info
+  - VITE_API_URL=https://uniselec-api.unilab.edu.br
+  - VITE_API_BASE_URL=https://uniselec-api.unilab.edu.br/api
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
