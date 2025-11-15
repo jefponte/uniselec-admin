@@ -14,13 +14,13 @@ patches:
 - path: patch-hpa.yaml
 
 configMapGenerator:
-- name: uniselec-admin-config
-  behavior: merge
+- behavior: merge
   literals:
   - MESSAGE=Serviço Seleções - Admin Staging
   - LOG_LEVEL=debug
   - VITE_API_URL=https://uniselec-api-staging.unilab.edu.br
   - VITE_API_BASE_URL=https://uniselec-api-staging.unilab.edu.br/api
+  name: uniselec-admin-config
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
