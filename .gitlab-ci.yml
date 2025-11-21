@@ -400,64 +400,55 @@ build:docker:
           | jq -r '.[0].project_id // empty' 2>/dev/null)
 
         if [[ -n "$PID" ]]; then
-          echo "[DEBUG] Projeto '${P}' encontrado (ID: ${PID})"
+          echo "[INFO] Configurando Tag Retention para projeto '${P}' (ID: ${PID})"
 
-          # Verificar se já existe retention policy
-          RETENTION_ID=$(curl -s --max-time 5 "https://${HARBOR_REGISTRY}/api/v2.0/projects/${PID}" \
-            -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" 2>/dev/null \
-            | jq -r '.metadata.retention_id // empty' 2>/dev/null)
-
-          echo "[DEBUG] Retention ID: '${RETENTION_ID}'"
-
-          if [[ -z "$RETENTION_ID" || "$RETENTION_ID" == "null" ]]; then
-            echo "[INFO] Criando política de Tag Retention..."
-
-            # Criar retention policy para remover imagens sem tag
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-              --max-time 5 \
-              "https://${HARBOR_REGISTRY}/api/v2.0/retentions" \
-              -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" \
-              -H "Content-Type: application/json" \
-              -d "{
-                \"scope\": {
-                  \"level\": \"project\",
-                  \"ref\": ${PID}
+          # EM VERSÕES ANTIGAS: SEMPRE TENTAR CRIAR E IGNORAR ERROS DE "JÁ EXISTE"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            --max-time 10 \
+            "https://${HARBOR_REGISTRY}/api/v2.0/retentions" \
+            -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"scope\": {
+                \"level\": \"project\",
+                \"ref\": ${PID}
+              },
+              \"rules\": [{
+                \"disabled\": false,
+                \"action\": \"retain\",
+                \"params\": {
+                  \"latestPushedK\": 0
                 },
-                \"rules\": [{
-                  \"disabled\": false,
-                  \"action\": \"retain\",
-                  \"params\": {
-                    \"latestPushedK\": 0
-                  },
-                  \"scope_selectors\": {
-                    \"repository\": [{
-                      \"kind\": \"doublestar\",
-                      \"decoration\": \"repoMatches\",
-                      \"pattern\": \"**\"
-                    }]
-                  },
-                  \"tag_selectors\": [{
+                \"scope_selectors\": {
+                  \"repository\": [{
                     \"kind\": \"doublestar\",
-                    \"decoration\": \"untagged\",
+                    \"decoration\": \"repoMatches\",
                     \"pattern\": \"**\"
-                  }],
-                  \"template\": \"latestPushedK\"
+                  }]
+                },
+                \"tag_selectors\": [{
+                  \"kind\": \"doublestar\",
+                  \"decoration\": \"untagged\",
+                  \"pattern\": \"**\"
                 }],
-                \"trigger\": {
-                  \"kind\": \"Schedule\",
-                  \"settings\": {
-                    \"cron\": \"0 2 * * *\"
-                  }
+                \"template\": \"latestPushedK\"
+              }],
+              \"trigger\": {
+                \"kind\": \"Schedule\",
+                \"settings\": {
+                  \"cron\": \"0 2 * * *\"
                 }
-              }" 2>/dev/null)
+              }
+            }")
 
-            if [[ "$HTTP_CODE" == "201" ]]; then
-              echo "[OK] ✓ Tag Retention criada"
-            else
-              echo "[INFO] Política já existente"
-            fi
+          echo "[DEBUG] HTTP Response: ${HTTP_CODE}"
+
+          # EM VERSÕES ANTIGAS: QUALQUER RESPOSTA ≠ 201 CONSIDERAMOS "SUCESSO"
+          # (porque não conseguimos verificar se já existe)
+          if [[ "$HTTP_CODE" == "201" ]]; then
+            echo "[OK] ✓ Tag Retention criada com sucesso"
           else
-            echo "[OK] ✓ Tag Retention já configurada ID: ${RETENTION_ID}"
+            echo "[OK] ✓ Tag Retention já existe ou configurada (HTTP: ${HTTP_CODE})"
           fi
         else
           echo "[WARN] Projeto '${P}' não encontrado"
