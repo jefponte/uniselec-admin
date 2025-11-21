@@ -389,11 +389,87 @@ build:docker:
       fi
       echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] Image build e push concluídos"
   after_script:
-    - echo "[INFO] Limpeza"
-    - docker logout ${HARBOR_REGISTRY} 2>/dev/null || true
-    - docker system prune -f --filter "until=24h"
-    - rm -f ~/.docker/config.json
-    - rm -f /tmp/.docker-*
+    # - |
+    #   echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Aplica Tag Retention ao projeto"
+    #   P=$(echo ${DOCKER_IMAGE}|cut -d'/' -f2)
+    #   PID=$(curl -s "https://${HARBOR_REGISTRY}/api/v2.0/projects?name=$P" -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" 2>/dev/null|jq -r '.[0].project_id//empty')
+    #   [[ -n "$PID" ]] && [[ -z "$(curl -s https://${HARBOR_REGISTRY}/api/v2.0/projects/${PID} -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" 2>/dev/null|jq -r '.metadata.retention_id//empty')" ]] && curl -s -X POST https://${HARBOR_REGISTRY}/api/v2.0/retentions -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" -H "Content-Type: application/json" -d "{\"scope\":{\"level\":\"project\",\"ref\":${PID}},\"rules\":[{\"disabled\":false,\"action\":\"retain\",\"params\":{\"latestPushedK\":0},\"scope_selectors\":{\"repository\":[{\"kind\":\"doublestar\",\"decoration\":\"repoMatches\",\"pattern\":\"**\"}]},\"tag_selectors\":[{\"kind\":\"doublestar\",\"decoration\":\"untagged\",\"pattern\":\"**\"}],\"template\":\"latestPushedK\"}],\"trigger\":{\"kind\":\"Schedule\",\"settings\":{\"cron\":\"0 2 * * *\"}}}" 2>/dev/null && echo "[OK] Tag Retention ativada" || true
+    # - |
+    #   echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Limpeza"
+    #   echo "[INFO] Limpeza"
+    #   docker logout ${HARBOR_REGISTRY} 2>/dev/null || true
+    #   docker system prune -f --filter "until=24h"
+    #   rm -f ~/.docker/config.json
+    #   rm -f /tmp/.docker-*
+    - |
+      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Configurando Tag Retention no Harbor"
+      P=$(echo "${DOCKER_IMAGE}" | cut -d'/' -f2)
+      if [[ -n "$P" ]]; then
+        # Buscar ID do projeto com timeout
+        PID=$(curl -s --max-time 5 "https://${HARBOR_REGISTRY}/api/v2.0/projects?name=${P}" \
+          -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" 2>/dev/null \
+          | jq -r '.[0].project_id // empty' 2>/dev/null)
+
+        if [[ -n "$PID" ]]; then
+          # Verificar se já existe retention policy
+          RETENTION_ID=$(curl -s --max-time 5 "https://${HARBOR_REGISTRY}/api/v2.0/projects/${PID}" \
+            -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" 2>/dev/null \
+            | jq -r '.metadata.retention_id // empty' 2>/dev/null)
+
+          if [[ -z "$RETENTION_ID" || "$RETENTION_ID" == "null" ]]; then
+            # Criar retention policy para remover imagens sem tag
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              --max-time 5 \
+              "https://${HARBOR_REGISTRY}/api/v2.0/retentions" \
+              -u "${HARBOR_USERNAME}:${HARBOR_PASSWORD}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"scope\": {
+                  \"level\": \"project\",
+                  \"ref\": ${PID}
+                },
+                \"rules\": [{
+                  \"disabled\": false,
+                  \"action\": \"retain\",
+                  \"params\": {
+                    \"latestPushedK\": 0
+                  },
+                  \"scope_selectors\": {
+                    \"repository\": [{
+                      \"kind\": \"doublestar\",
+                      \"decoration\": \"repoMatches\",
+                      \"pattern\": \"**\"
+                    }]
+                  },
+                  \"tag_selectors\": [{
+                    \"kind\": \"doublestar\",
+                    \"decoration\": \"untagged\",
+                    \"pattern\": \"**\"
+                  }],
+                  \"template\": \"latestPushedK\"
+                }],
+                \"trigger\": {
+                  \"kind\": \"Schedule\",
+                  \"settings\": {
+                    \"cron\": \"0 2 * * *\"
+                  }
+                }
+              }" 2>/dev/null)
+
+            if [[ "$HTTP_CODE" == "201" ]]; then
+              echo "[OK] ✓ Tag Retention ativada"
+            fi
+          else
+            echo "[OK] ✓ Tag Retention já configurada (ID: ${RETENTION_ID})"
+          fi
+        fi
+      fi
+    - |
+      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Limpeza"
+      docker logout ${HARBOR_REGISTRY} 2>/dev/null || true
+      docker system prune -f --filter "until=24h"
+      rm -f ~/.docker/config.json
+      rm -f /tmp/.docker-*
   allow_failure: false
 
 # STAGE: Development (GitOps - ArgoCD)
