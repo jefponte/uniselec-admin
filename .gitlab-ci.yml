@@ -19,24 +19,30 @@ stages:
 
 # Globais
 variables:
+  # Projeto
+  APP_NAME: "uniselec-admin"
+  GIT_BRANCH: "main"
+  # Repositório Git
   REPO_URL: "https://dti-gitlab.unilab.edu.br/dti/uniselec-admin.git"
   REPO_DOMAIN: "dti-gitlab.unilab.edu.br"
   REPO_PATH: "dti/uniselec-admin"
-  GIT_BRANCH: "main"
   GIT_AUTHOR_NAME: "GitLab CI"
   GIT_AUTHOR_EMAIL: "gitlab-ci@unilab.edu.br"
-  APP_NAME: uniselec-admin
-  DOMAIN_DEV: uniselec-admin-development.unilab.edu.br
-  DOMAIN_STAG: uniselec-admin-staging.unilab.edu.br
-  DOMAIN_PROD: uniselec-admin.unilab.edu.br
-  HARBOR_REGISTRY: dti-registro.unilab.edu.br
+  # Domínios
+  DOMAIN_DEV: "uniselec-admin-development.unilab.edu.br"
+  DOMAIN_STAG: "uniselec-admin-staging.unilab.edu.br"
+  DOMAIN_PROD: "uniselec-admin.unilab.edu.br"
+  # Container Registry
+  HARBOR_REGISTRY: "dti-registro.unilab.edu.br"
   DOCKER_IMAGE: "${HARBOR_REGISTRY}/unilab/${APP_NAME}"
-  ARGOCD_SERVER: argocd.unilab.edu.br
-  CLUSTER_REMOTE1_DOMAIN: 10.130.0.45
-  KUBECONFIG: /tmp/kubeconfig-${CI_PIPELINE_ID}
-  MAIL_PRD: jefponte@unilab.edu.br
-  ARGOCD_TIMEOUT: 600
-  BASE_IMAGE: dti-registro.unilab.edu.br/unilab/ubuntu-k8s-tools:latest
+  BASE_IMAGE: "dti-registro.unilab.edu.br/unilab/ubuntu-k8s-tools:latest"
+  # Kubernetes/ArgoCD
+  ARGOCD_SERVER: "argocd.unilab.edu.br"
+  CLUSTER_REMOTE1_DOMAIN: "10.130.0.45"
+  KUBECONFIG: "/tmp/kubeconfig-${CI_PIPELINE_ID}"
+  ARGOCD_TIMEOUT: "600"
+  # Notificação
+  MAIL_PRD: "jefponte@unilab.edu.br"
 
 # STAGE 1
 validate:environment:
