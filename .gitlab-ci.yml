@@ -1,10 +1,10 @@
-# ════════════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
 # GitLab CI/CD Pipeline - GitOps
-# ════════════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
 # Padrões: GitLab CE CI/CD, GitOps, Kubernetes Best Practices
-# Arquitetura: K8S (Main/Hub ArgoCD) → K8S (Remote/Workloads)
+# Arquitetura: K8S (Main/Hub ArgoCD), K8S (Remote/Workloads)
 # Projeto: cicd-gitops
-# ════════════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
 
 stages:
   - validate
@@ -60,7 +60,7 @@ validate:environment:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
   script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')][INFO] Validando ambiente e pré-requisitos..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Validando ambiente e pré-requisitos"
     - |
       ERRORS=0
 
@@ -115,6 +115,7 @@ validate:environment:
         exit 1
       fi
 
+# STAGE 2
 validate:kustomize:
   stage: validate
   image: ${BASE_IMAGE}
@@ -130,7 +131,7 @@ validate:kustomize:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
   script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Validando kustomize overlays..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Validando kustomize overlays"
     - |
       if [[ "$CI_COMMIT_BRANCH" == "develop" ]]; then
         echo "[$(date '+%d/%m/%Y %H:%M:%S')] [CHECK] Development overlay"
@@ -144,6 +145,7 @@ validate:kustomize:
         kubectl kustomize kustomize/overlays/production -o yaml > /tmp/production-manifest.yaml
       fi
 
+# STAGE 3
 validate:docker:
   stage: validate
   image: ${BASE_IMAGE}
@@ -159,12 +161,12 @@ validate:docker:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
   script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Validando Dockerfile..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Validando Dockerfile"
     - docker build --help > /dev/null 2>&1 && echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] Docker CLI disponível"
     - test -f ./Dockerfile && echo "[OK] Dockerfile encontrado"
     - docker run --rm -i hadolint/hadolint < ./Dockerfile && echo "[OK] Dockerfile lint passed" || true
 
-# STAGE 2
+# STAGE 4
 tests:unit:
   stage: tests
   image: ${BASE_IMAGE}
@@ -190,10 +192,10 @@ tests:unit:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
   before_script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Iniciando testes unitários..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Iniciando testes unitários"
     - |
       if [ -d .git ] && [ -f .git/shallow ]; then
-        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Descarregando git history completo..."
+        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Descarregando git history completo"
         git fetch --unshallow
       fi
     - cd .
@@ -219,6 +221,7 @@ tests:unit:
     expire_in: 30 days
   allow_failure: true
 
+# STAGE 5
 tests:dependency_check:
   stage: tests
   image: ${BASE_IMAGE}
@@ -247,6 +250,7 @@ tests:dependency_check:
       - /tmp/npm-audit.json
     expire_in: 30 days
 
+# STAGE 6
 tests:sast_scan:
   stage: tests
   image: ${BASE_IMAGE}
@@ -271,6 +275,7 @@ tests:sast_scan:
     expire_in: 30 days
   interruptible: true
 
+# STAGE 7
 tests:sonarqube:
   stage: tests
   image: ${BASE_IMAGE}
@@ -298,15 +303,15 @@ tests:sonarqube:
         -Dsonar.projectVersion=${CI_COMMIT_SHA} \
         -Dsonar.host.url=${SONAR_HOST_URL} \
         -Dsonar.token=${SONAR_TOKEN} \
-        -Dsonar.language=js \
         -Dsonar.sources=src \
+        -Dsonar.language=js \
         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
         -Dsonar.qualitygate.wait=true \
         -Dsonar.qualitygate.timeout=300
     - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] Quality gate passou"
   allow_failure: false
 
-# STAGE 3
+# STAGE 8
 build:docker:
   stage: build
   image: ${BASE_IMAGE}
@@ -432,7 +437,7 @@ build:docker:
       rm -f /tmp/.docker-*
   allow_failure: false
 
-# STAGE 4
+# STAGE 9
 development:deploy:
   stage: development
   image: ${BASE_IMAGE}
@@ -488,7 +493,7 @@ development:deploy:
             git rebase --abort 2>/dev/null || true
           fi
           if [ $i -lt 3 ]; then
-            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando..."
+            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando"
             sleep 3
             git fetch https://${TOKEN_PAT_NAME}:${TOKEN_PAT_ACCESS}@${REPO_DOMAIN}/${REPO_PATH}.git develop
           fi
@@ -667,7 +672,7 @@ development:deploy:
     - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Pipeline development finalizada com status ${CI_JOB_STATUS}"
   allow_failure: false
 
-# STAGE 5
+# STAGE 10
 staging:deploy:
   stage: staging
   image: ${BASE_IMAGE}
@@ -722,7 +727,7 @@ staging:deploy:
             git rebase --abort 2>/dev/null || true
           fi
           if [ $i -lt 3 ]; then
-            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando..."
+            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando"
             sleep 3
             git fetch https://${TOKEN_PAT_NAME}:${TOKEN_PAT_ACCESS}@${REPO_DOMAIN}/${REPO_PATH}.git ${GIT_BRANCH}
           fi
@@ -856,7 +861,7 @@ staging:deploy:
 
       if [[ -z "${FOUND_APP}" ]]; then
         echo "[$(date '+%d/%m/%Y %H:%M:%S')] [ERROR] Application não foi criada pelo ApplicationSet após $TIMEOUT segundos"
-        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando ApplicationSet..."
+        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando ApplicationSet"
         kubectl get applicationset -n argocd | grep ${APP_NAME} || echo "[WARN] ApplicationSet não encontrado"
         exit 1
       fi
@@ -900,7 +905,7 @@ staging:deploy:
     - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Pipeline staging finalizada com status ${CI_JOB_STATUS}"
   allow_failure: false
 
-# STAGE 6
+# STAGE 11
 notification:staging:
   stage: notification
   image: ${BASE_IMAGE}
@@ -948,7 +953,7 @@ notification:staging:
         -s "$EMAIL_SUBJECT" "$MAIL_PRD" <<< "$EMAIL_BODY"
   allow_failure: true
 
-# STAGE 7
+# STAGE 12
 approval:production:
   stage: approval
   image: ${BASE_IMAGE}
@@ -967,7 +972,7 @@ approval:production:
     - echo "AGUARDANDO APROVAÇÃO MANUAL PARA PRODUÇÃO"
   allow_failure: false
 
-# STAGE 8
+# STAGE 13
 production:deploy:
   stage: production
   image: ${BASE_IMAGE}
@@ -1026,7 +1031,7 @@ production:deploy:
             git rebase --abort 2>/dev/null || true
           fi
           if [ $i -lt 3 ]; then
-            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando..."
+            echo "[$(date '+%d/%m/%Y %H:%M:%S')] [WARN] Tentativa $i falhou, aguardando"
             sleep 3
             git fetch https://${TOKEN_PAT_NAME}:${TOKEN_PAT_ACCESS}@${REPO_DOMAIN}/${REPO_PATH}.git ${GIT_BRANCH}
           fi
@@ -1092,7 +1097,7 @@ production:deploy:
       echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] argocd CLI disponível (versão: ${ARGOCD_VERSION})"
 
     - |
-      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Fazendo login no ArgoCD..."
+      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Fazendo login no ArgoCD"
       LOGIN_OUTPUT=$(argocd login ${ARGOCD_SERVER} \
         --username admin \
         --password ${ARGOCD_PASSWORD} \
@@ -1103,7 +1108,7 @@ production:deploy:
       else
         echo "[$(date '+%d/%m/%Y %H:%M:%S')] [ERROR] Falha no login do ArgoCD"
         echo "[$(date '+%d/%m/%Y %H:%M:%S')] [DEBUG] ${LOGIN_OUTPUT}"
-        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando conectividade..."
+        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando conectividade"
         argocd version --server ${ARGOCD_SERVER} --grpc-web --insecure || true
         exit 1
       fi
@@ -1161,7 +1166,7 @@ production:deploy:
 
       if [[ -z "${FOUND_APP}" ]]; then
         echo "[$(date '+%d/%m/%Y %H:%M:%S')] [ERROR] Application não foi criada pelo ApplicationSet após $TIMEOUT segundos"
-        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando ApplicationSet..."
+        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Verificando ApplicationSet"
         kubectl get applicationset -n argocd | grep ${APP_NAME} || echo "[WARN] ApplicationSet não encontrado"
         exit 1
       fi
@@ -1205,7 +1210,7 @@ production:deploy:
     - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Pipeline production finalizada com status ${CI_JOB_STATUS}"
   allow_failure: false
 
-# STAGE 9
+# STAGE 14
 notify:success:
   stage: notify
   image: ${BASE_IMAGE}
@@ -1216,7 +1221,7 @@ notify:success:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
       when: on_success
   before_script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Notificando e-mail sucesso..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Notificando e-mail sucesso"
     - service postfix start
   script:
     - |
@@ -1242,6 +1247,7 @@ notify:success:
         -s "$EMAIL_SUBJECT" "$MAIL_PRD" <<< "$EMAIL_BODY"
   allow_failure: true
 
+# STAGE 15
 notify:failure:
   stage: notify
   image: ${BASE_IMAGE}
@@ -1252,7 +1258,7 @@ notify:failure:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
       when: on_failure
   before_script:
-    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Notificando e-mail falha..."
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Notificando e-mail falha"
     - service postfix start
   script:
     - |
