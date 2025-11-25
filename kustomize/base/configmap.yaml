@@ -3,8 +3,9 @@ kind: ConfigMap
 metadata:
   name: uniselec-admin-config
 data:
-  .env: |
-    MESSAGE="Serviço Admin"
-    LOG_LEVEL="info"
-    VITE_API_URL=http://localhost:8000
-    VITE_API_BASE_URL=http://localhost:8000/api
+  LOG_LEVEL: "debug"
+  VITE_API_URL: https://uniselec-api-development.unilab.edu.br
+  VITE_STAGING_ENABLED: true
+  VITE_STAGING_SALT: PaEWqRH3Ih7GeK7pgXKu2g==
+  VITE_STAGING_HASH: s2ApJnkTNItZm5e3U8nZbXmIedzf2ud/lZ024sqMQOk=
+  MESSAGE: "Serviço Admin"

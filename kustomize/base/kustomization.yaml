@@ -11,3 +11,13 @@ resources:
   - ingress.yaml
   - sealed-secret-regcred.yaml
   - hpa.yaml
+
+# Variáveis COMUNS
+configMapGenerator:
+  - name: uniselec-admin-config
+    options:
+      disableNameSuffixHash: true
+    literals:
+      - LOG_LEVEL="debug"
+      - VITE_STAGING_SALT=PaEWqRH3Ih7GeK7pgXKu2g==
+      - VITE_STAGING_HASH=s2ApJnkTNItZm5e3U8nZbXmIedzf2ud/lZ024sqMQOk=

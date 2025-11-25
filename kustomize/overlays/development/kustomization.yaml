@@ -13,14 +13,18 @@ patches:
 - path: patch-ingress.yaml
 - path: patch-hpa.yaml
 
+# MERGE com valores específicos de DEVELOPMENT
 configMapGenerator:
-- behavior: merge
-  literals:
-  - MESSAGE=Serviço Seleções - Admin Development
-  - LOG_LEVEL=debug
-  - VITE_API_URL=https://uniselec-api-development.unilab.edu.br
-  - VITE_API_BASE_URL=https://uniselec-api-development.unilab.edu.br/api
-  name: uniselec-admin-config
+  - name: uniselec-admin-config
+    behavior: merge
+    options:
+      disableNameSuffixHash: true
+    literals:
+      - LOG_LEVEL="debug"
+      - VITE_API_URL=https://uniselec-api-development.unilab.edu.br
+      - VITE_STAGING_SALT=PaEWqRH3Ih7GeK7pgXKu2g==
+      - VITE_STAGING_HASH=s2ApJnkTNItZm5e3U8nZbXmIedzf2ud/lZ024sqMQOk=
+      - MESSAGE="Serviço Admin Development"
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
