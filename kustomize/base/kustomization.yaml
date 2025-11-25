@@ -5,7 +5,6 @@ kind: Kustomization
 namespace: uniselec-admin
 
 resources:
-  - configmap.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
