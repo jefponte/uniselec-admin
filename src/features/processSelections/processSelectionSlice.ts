@@ -82,6 +82,17 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       query: removeCourseFromProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
     }),
+    exportApplicationsCsv: query<Blob, string>({
+      query: (processSelectionId) => ({
+        url: `${endpointUrl}/${processSelectionId}/applications/export`,
+        method: "GET",
+        // aqui tipamos como Response para TS não reclamar de `any`
+        responseHandler: async (response: Response) => {
+          return response.blob();
+        },
+      }),
+      providesTags: [],
+    }),
   }),
 });
 
@@ -92,5 +103,6 @@ export const {
   useGetProcessSelectionQuery,
   useDeleteProcessSelectionMutation,
   useAttachCoursesMutation,
-  useRemoveCourseFromProcessSelectionMutation
+  useRemoveCourseFromProcessSelectionMutation,
+  useLazyExportApplicationsCsvQuery,
 } = processSelectionsApiSlice;

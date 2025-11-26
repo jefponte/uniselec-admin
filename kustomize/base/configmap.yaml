@@ -3,8 +3,5 @@ kind: ConfigMap
 metadata:
   name: uniselec-admin-config
 data:
-  .env: |
-    MESSAGE="Serviço Admin"
-    LOG_LEVEL="info"
-    VITE_API_URL=http://localhost:8000
-    VITE_API_BASE_URL=http://localhost:8000/api
+  LOG_LEVEL: "debug"
+  MESSAGE: "Serviço Admin"

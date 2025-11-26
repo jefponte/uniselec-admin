@@ -95,6 +95,7 @@ function App() {
           <Route path="/process-selections/:id/convocation-lists/detail/:convocationListId" element={<ProtectedRoute><ConvocationListDetail /></ProtectedRoute>} />
           <Route path="/process-selections/:id/convocation-lists/edit/:convocationListId" element={<ProtectedRoute><ConvocationListEdit /></ProtectedRoute>} />
           <Route path="/process-selections/:id/convocation-lists/create" element={<ProtectedRoute><ConvocationListCreate /></ProtectedRoute>} />
+
           <Route path="/applications" element={<ProtectedRoute><ApplicationList /></ProtectedRoute>} />
           <Route path="/applications/detail/:id" element={<ProtectedRoute><ApplicationDetail /></ProtectedRoute>} />
 
