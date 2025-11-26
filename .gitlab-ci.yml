@@ -43,6 +43,10 @@ variables:
   ARGOCD_TIMEOUT: "600"
   # Notificação
   MAIL_PRD: "jefponte@unilab.edu.br"
+  # Endpoint API
+  VITE_API_URL_DEV: https://uniselec-api-development.unilab.edu.br
+  VITE_API_URL_STG: https://uniselec-api-staging.unilab.edu.br
+  VITE_API_URL_PRD: https://uniselec-api.unilab.edu.br
 
 # STAGE 1
 validate:environment:
@@ -343,6 +347,41 @@ build:docker:
       fi
     - cd .
   script:
+    # .ENV
+    - echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Gerando .env"
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "develop" ]]; then
+        DEPLOY_ENV="dev"
+      elif [[ -n "$CI_COMMIT_TAG" ]]; then
+        DEPLOY_ENV="prd"
+      elif [[ "$CI_COMMIT_BRANCH" == "main" ]]; then
+        DEPLOY_ENV="stg"
+      else
+        echo "[$(date '+%d/%m/%Y %H:%M:%S')] [ERROR] Branch/tag não reconhecido"
+        exit 1
+      fi
+    - |
+      cp .env.example .env
+      case "$DEPLOY_ENV" in
+        dev)
+          API_URL="$VITE_API_URL_DEV"
+          STAGING_ENABLED=true
+          ;;
+        stg)
+          API_URL="$VITE_API_URL_STG"
+          STAGING_ENABLED=true
+          ;;
+        prd)
+          API_URL="$VITE_API_URL_PRD"
+          STAGING_ENABLED=false
+          ;;
+      esac
+      sed -i "s|^VITE_API_URL=.*|VITE_API_URL=$API_URL|g" .env
+
+      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] .env configurado:"
+      cat .env
+      ls -la .
+    # BUILD DOCKER
     - |
       echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Tag da imagem docker"
       if [[ "$CI_COMMIT_BRANCH" == "develop" ]]; then

@@ -21,11 +21,8 @@ configMapGenerator:
       disableNameSuffixHash: true
     literals:
       - LOG_LEVEL="error"
-      - VITE_API_URL=https://uniselec-api.unilab.edu.br
-      - VITE_STAGING_SALT=PaEWqRH3Ih7GeK7pgXKu2g==
-      - VITE_STAGING_HASH=s2ApJnkTNItZm5e3U8nZbXmIedzf2ud/lZ024sqMQOk=
       - MESSAGE="Serviço Admin Production"
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
-  newTag: v1.0.2
+  newTag: v1.0.0
