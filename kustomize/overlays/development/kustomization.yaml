@@ -15,13 +15,13 @@ patches:
 
 # MERGE com valores específicos de DEVELOPMENT
 configMapGenerator:
-  - name: uniselec-admin-config
-    behavior: merge
-    options:
-      disableNameSuffixHash: true
-    literals:
-      - LOG_LEVEL="debug"
-      - MESSAGE="Serviço Admin Development"
+- behavior: merge
+  literals:
+  - LOG_LEVEL="debug"
+  - MESSAGE="Serviço Admin Development"
+  name: uniselec-admin-config
+  options:
+    disableNameSuffixHash: true
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
