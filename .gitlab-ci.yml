@@ -378,9 +378,6 @@ build:docker:
       esac
       sed -i "s|^VITE_API_URL=.*|VITE_API_URL=$API_URL|g" .env
 
-      echo "[$(date '+%d/%m/%Y %H:%M:%S')] [OK] .env configurado:"
-      cat .env
-      ls -la .
     # BUILD DOCKER
     - |
       echo "[$(date '+%d/%m/%Y %H:%M:%S')] [INFO] Tag da imagem docker"
