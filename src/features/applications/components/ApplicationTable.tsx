@@ -100,13 +100,34 @@ export function ApplicationTable({
       renderCell: renderNameCell,
     },
     { field: "user_name", headerName: "Nome", flex: 1, renderCell: renderNameCell },
-    { field: "email", headerName: "E-mail", flex: 1, renderCell: renderNameCell },
     { field: "cpf", headerName: "CPF", flex: 1, renderCell: renderNameCell },
-    { field: "enem", headerName: "ENEM", flex: 1, renderCell: renderNameCell },
+    {
+      field: "course_name",
+      headerName: "Curso",
+      flex: 1,
+      renderCell: renderNameCell,
+    },
+    {
+      field: "admission_categories",
+      headerName: "Categorias",
+      flex: 1,
+      renderCell: (params) => (
+        <Typography>{params.value}</Typography>
+      ),
+
+    }, {
+      field: "phone",
+      headerName: "Telefone",
+      flex: 1,
+      renderCell: renderNameCell,
+    },
+
+
   ];
 
   function mapDataToGridRows(data: Results) {
     const { data: applications } = data;
+    console.log(data);
     return applications.map((application) => ({
       id: application.id,
       user_name: application?.form_data?.name,
@@ -115,6 +136,11 @@ export function ApplicationTable({
       enem: application?.form_data?.enem,
       updated_at: application.updated_at,
       data: [],
+      admission_categories: application?.form_data?.admission_categories
+        ?.map((cat) => cat.name)
+        .join(", "),
+      course_name: application?.form_data?.position?.name,
+      phone: application?.form_data?.phone1,
       created_at: application.created_at,
     }));
   }
