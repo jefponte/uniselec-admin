@@ -57,14 +57,14 @@ export const ApplicationsStep = () => {
 
           <Button
             variant="outlined"
-            onClick={() => navigate(`/applications/list`)}
+            onClick={() => navigate(`/applications`)}
           >
             Ver Inscrições
           </Button>
 
           <Button
             variant="outlined"
-            onClick={() => navigate(`/applications/statistics/${processSelectionId}`)}
+            onClick={() => alert("Funcionalidade de estatísticas em desenvolvimento")}
           >
             Estatísticas
           </Button>
