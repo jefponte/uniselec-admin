@@ -10,11 +10,8 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { ProcessSelectionDetails } from "./ProcessSelectionDetails";
-// import { EnemScoreImport } from "../enemScores/EnemScoreImport";
-// import { EnemScoreList } from "../enemScores/EnemScoreList";
+
 import { useGetProcessSelectionQuery } from "./processSelectionSlice";
-import { CardAdvise } from "./components/CardAdvise";
-import { ApplicationCSVDownload } from "../applications/ApplicationCSVDownload";
 import { ImportEnemScoreStep } from "./ImportEnemScoreStep";
 import { ApplicationOutcomesStep } from "./ApplicationOutcomesStep";
 import { ProcessSelectionConvocation } from "./ProcessSelectionConvocation";
@@ -25,10 +22,8 @@ export const ProcessSelectionDetailStepper = () => {
   const { id } = useParams<{ id: string }>();
   const { data: processSelection, isLoading } = useGetProcessSelectionQuery({ id: id! });
 
-  // Sempre chamar os Hooks no topo, antes de qualquer retorno condicional.
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  // Agora, condicione a renderização após todos os Hooks terem sido chamados.
   if (isLoading) {
     return <Typography>Carregando...</Typography>;
   }
