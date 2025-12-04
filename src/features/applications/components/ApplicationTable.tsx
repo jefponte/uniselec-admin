@@ -127,7 +127,6 @@ export function ApplicationTable({
 
   function mapDataToGridRows(data: Results) {
     const { data: applications } = data;
-    console.log(data);
     return applications.map((application) => ({
       id: application.id,
       user_name: application?.form_data?.name,
