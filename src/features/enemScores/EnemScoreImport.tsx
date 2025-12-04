@@ -1,4 +1,3 @@
-// features/enemScores/EnemScoreImport.tsx
 import React, { useState } from "react";
 import {
   Box,
@@ -55,7 +54,7 @@ export const EnemScoreImport: React.FC = () => {
     <Card>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          2. Faça upload das notas obtidas no sistema do INEP
+          Faça upload das notas obtidas no sistema do INEP
         </Typography>
 
         <Box mt={2}>
