@@ -91,7 +91,7 @@ export const EnemSummaryCard: React.FC<Props> = ({ processSelectionId }) => {
               </Typography>
 
               <Tooltip
-                title="Se este valor não for zero, ainda faltam processar notas. Talvez faltam envios ao INEP."
+                title="Se este valor não for zero, ainda faltam notas a serem incluídas. Verifique se não faltou algum arquivo."
                 arrow
                 placement="right"
               >
