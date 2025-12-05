@@ -209,12 +209,12 @@ const DeferidosIndeferidosList = () => {
         if (outcome.status === "approved") {
             return (enem_score?.scores?.name || "").toUpperCase();
         }
-        
+
         return (form_data?.name || "").toUpperCase();
     };
 
     const getDisplayCPF = (outcome: ApplicationOutcome, maskCPF: (cpf: string) => string): string => {
-        
+
         if (!outcome?.application) return "";
 
         const { form_data, resolved_inconsistencies } = outcome.application;
@@ -232,9 +232,10 @@ const DeferidosIndeferidosList = () => {
                 <Grid container alignItems="center" spacing={2}>
                     {/* Título */}
                     <Grid item xs={12} md>
-                        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                        <Typography variant="h5" gutterBottom>
                             Inscrições Deferidas ou Indeferidas
                         </Typography>
+
                     </Grid>
 
                     {/* Select de filtro */}
@@ -258,9 +259,12 @@ const DeferidosIndeferidosList = () => {
                     </Grid>
 
                     {/* Botão PDF */}
-                    <Grid item xs={12} sm={6} md="auto">
+                    <Grid item xs={12} sm={6} md="auto" sx={{ display: 'flex', gap: 1 }}>
                         <Button variant="contained" onClick={generatePDF}>
                             Gerar PDF
+                        </Button>
+                        <Button variant="contained" component={Link} to={`/process-selections/details/${processSelectionId}/step/3`}>
+                            Voltar
                         </Button>
                     </Grid>
                 </Grid>
