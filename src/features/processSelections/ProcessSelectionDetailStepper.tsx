@@ -36,7 +36,7 @@ export const ProcessSelectionDetailStepper = () => {
   const stepLabels = [
     "Processo Seletivo",
     "Inscrições",
-    "Importar Notas ",
+    "Notas do INEP ",
     "Resultados",
     "Convocações"
   ]
