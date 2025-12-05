@@ -37,8 +37,17 @@ export const ApplicationsStep = () => {
 
   const enemYears = [2019, 2020, 2021, 2022, 2023, 2024];
 
+  // Guarda o último Blob que já foi processado para evitar downloads repetidos
+  const lastProcessedBlobRef = React.useRef<Blob | null>(null);
+
   React.useEffect(() => {
     if (!fileBlob || !processSelectionId || !lastRequest) return;
+
+    // Se for o mesmo Blob de antes, não faz nada (evita múltiplos downloads)
+    if (fileBlob === lastProcessedBlobRef.current) {
+      return;
+    }
+    lastProcessedBlobRef.current = fileBlob;
 
     const url = window.URL.createObjectURL(fileBlob);
     const a = document.createElement("a");
@@ -90,56 +99,10 @@ export const ApplicationsStep = () => {
       <Card sx={{ width: 520, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h5" component="div" gutterBottom>
-            Gerenciar Inscrições
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mb={2}>
-            Utilize as opções abaixo para configurar a exportação das inscrições.
+            Acompanhar as Inscrições
           </Typography>
 
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              border: "1px solid",
-              borderColor: "divider",
-              mb: 2,
-            }}
-          >
-            <Stack spacing={2}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={onlyEnem}
-                    onChange={(e) => setOnlyEnem(e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Exportação formato INEP"
-              />
 
-              <TextField
-                select
-                label="Ano do ENEM (opcional)"
-                value={enemYear}
-                onChange={(e) => setEnemYear(e.target.value)}
-                fullWidth
-                size="small"
-              >
-                <MenuItem value="">
-                  <em>Todos os anos</em>
-                </MenuItem>
-                {enemYears.map((year) => (
-                  <MenuItem key={year} value={year.toString()}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <Typography variant="caption" color="text.secondary">
-                • Selecione "Exportação formato INEP" para obter um arquivo ZIP com a lista de arquivos no formato exigido pelo INEP.
-              </Typography>
-            </Stack>
-          </Box>
 
           <Divider />
 
@@ -157,7 +120,7 @@ export const ApplicationsStep = () => {
             onClick={handleDownload}
             disabled={isFetching}
           >
-            {isFetching ? "Gerando arquivo..." : "Download"}
+            {isFetching ? "Gerando arquivo..." : "Download das Inscrições"}
           </Button>
 
           <Button variant="outlined" onClick={() => navigate(`/applications`)}>
