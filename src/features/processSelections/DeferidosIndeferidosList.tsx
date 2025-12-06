@@ -69,7 +69,7 @@ const DeferidosIndeferidosList = () => {
 
     const [options] = useState({
         page: 1,
-        perPage: 25,
+        perPage: 5000,
         search: "",
         filters: { process_selection_id: processSelectionId } as Record<string, string>,
     });
@@ -304,7 +304,7 @@ const DeferidosIndeferidosList = () => {
             return params;
         });
     };
-
+    console.log(outcomesData);
     return (
         <Box sx={{ mt: 0, mb: 0 }}>
             <Paper sx={{ p: 3, mb: 2 }}>
@@ -484,6 +484,7 @@ const DeferidosIndeferidosList = () => {
                                 </tr>
                             </thead>
                             <tbody>
+
                                 {deferidosIndeferidos?.map((outcome) => (
                                     <tr
                                         key={outcome.id}
