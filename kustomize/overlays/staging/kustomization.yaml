@@ -15,13 +15,13 @@ patches:
 
 # MERGE com valores específicos de STAGING
 configMapGenerator:
-  - name: uniselec-admin-config
-    behavior: merge
-    options:
-      disableNameSuffixHash: true
-    literals:
-      - LOG_LEVEL="info"
-      - MESSAGE="Serviço Admin Staging"
+- behavior: merge
+  literals:
+  - LOG_LEVEL="info"
+  - MESSAGE="Serviço Admin Staging"
+  name: uniselec-admin-config
+  options:
+    disableNameSuffixHash: true
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin

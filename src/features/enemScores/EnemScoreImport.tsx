@@ -1,4 +1,3 @@
-// features/enemScores/EnemScoreImport.tsx
 import React, { useState } from "react";
 import {
   Box,
@@ -16,6 +15,7 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useImportEnemScoresMutation } from "./enemScoreSlice";
+import { EnemSummaryCard } from "./EnemSummaryCard";
 
 export const EnemScoreImport: React.FC = () => {
   const { id: processSelectionId } = useParams<{ id: string }>();
@@ -33,7 +33,7 @@ export const EnemScoreImport: React.FC = () => {
 
   const [importScores, { isLoading }] = useImportEnemScoresMutation();
 
-  /* upload real — chamado somente após confirmar no modal */
+
   const handleUpload = async () => {
     if (!file) return;
     setError(null);
@@ -55,14 +55,18 @@ export const EnemScoreImport: React.FC = () => {
     <Card>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          2. Faça upload das notas obtidas no sistema do INEP
+          2. Importar Notas do ENEM
         </Typography>
-
+        <EnemSummaryCard processSelectionId={Number(processSelectionId)} />
         <Box mt={2}>
           <input
             type="file"
             accept=".csv,.txt"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+              setFile(e.target.files?.[0] ?? null);
+              setSummary(null);
+              setError(null);
+            }}
           />
         </Box>
 
@@ -114,6 +118,7 @@ export const EnemScoreImport: React.FC = () => {
 
         {summary && (
           <Alert severity="success" sx={{ mt: 2 }}>
+            Resultado para o arquivo: <b>{file?.name ?? ""} </b><br />
             Processadas: {summary.processed} &nbsp;|&nbsp; Criadas:
             {summary.created} &nbsp;|&nbsp; Atualizadas: {summary.updated}
             &nbsp;|&nbsp; Não encontradas: {summary.not_found}
@@ -122,10 +127,12 @@ export const EnemScoreImport: React.FC = () => {
 
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
+            Resultado para o arquivo: <b>{file?.name ?? ""} </b><br />
             {error}
           </Alert>
         )}
       </CardContent>
+
     </Card>
   );
 };

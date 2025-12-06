@@ -15,14 +15,14 @@ patches:
 
 # MERGE com valores específicos de PRODUCTION
 configMapGenerator:
-  - name: uniselec-admin-config
-    behavior: merge
-    options:
-      disableNameSuffixHash: true
-    literals:
-      - LOG_LEVEL="error"
-      - MESSAGE="Serviço Admin Production"
+- behavior: merge
+  literals:
+  - LOG_LEVEL="error"
+  - MESSAGE="Serviço Admin Production"
+  name: uniselec-admin-config
+  options:
+    disableNameSuffixHash: true
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
-  newTag: v1.0.0
+  newTag: v3.0.7

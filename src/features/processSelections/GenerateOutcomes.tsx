@@ -1,5 +1,4 @@
-// features/processSelections/ApplicationOutcomesStep.tsx
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Button,
@@ -16,15 +15,21 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useGenerateApplicationOutcomeMutation } from "../applicationOutcomes/applicationOutcomeSlice";
+import { useGenerateApplicationOutcomeMutation, useGetApplicationOutcomesQuery } from "../applicationOutcomes/applicationOutcomeSlice";
 
 export const GenerateOutcomes: React.FC = () => {
   const { id: selectionId } = useParams<{ id: string }>();
 
-  const [generate, { isLoading: loadingAll }] =
-    useGenerateApplicationOutcomeMutation();
+  const [generate, { isLoading: loadingAll }] = useGenerateApplicationOutcomeMutation();
+  const [options, setOptions] = useState({
+    page: 1,
+    perPage: 25,
+    search: "",
+    filters: { process_selection_id: selectionId! } as Record<string, string>,
+  });
 
-  /* estados */
+  const { data: outcomesData, isFetching: isFetchingOutcomeData } = useGetApplicationOutcomesQuery(options);
+
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [snack, setSnack] = React.useState<{
     open: boolean;
@@ -32,7 +37,6 @@ export const GenerateOutcomes: React.FC = () => {
     msg: string;
   }>({ open: false, severity: "success", msg: "" });
 
-  /* wrapper para lidar com o snackbar */
   const handle = (promise: Promise<any>) =>
     promise
       .then(() =>
@@ -42,7 +46,6 @@ export const GenerateOutcomes: React.FC = () => {
         setSnack({ open: true, severity: "error", msg: "Erro ao processar resultados." })
       );
 
-  /* ação final após confirmar no diálogo */
   const confirmGenerate = () => {
     setDialogOpen(false);
     if (selectionId) {
@@ -55,7 +58,7 @@ export const GenerateOutcomes: React.FC = () => {
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
-            1. Processar Resultados
+            1. Pré-processamento de resultados
           </Typography>
 
           <Grid container spacing={2}>
@@ -66,12 +69,23 @@ export const GenerateOutcomes: React.FC = () => {
                 onClick={() => setDialogOpen(true)}
               >
                 {loadingAll ? <CircularProgress size={22} sx={{ mr: 1 }} /> : null}
-                Gerar Resultados
+                Iniciar
               </Button>
             </Grid>
           </Grid>
+
+          {outcomesData?.meta?.total ? (<>
+            <Alert severity="success" sx={{ mt: 2 }}>
+              {outcomesData?.meta?.total} Resultados
+            </Alert>
+          </>) : (<>
+            <Alert severity="error" sx={{ mt: 2 }}>
+              Nenhum resultado processado.
+            </Alert>
+          </>)}
+
         </CardContent>
-      </Card>
+      </Card >
 
       <Dialog
         open={dialogOpen}

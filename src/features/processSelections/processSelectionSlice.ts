@@ -1,4 +1,9 @@
-import { Result, Results, ProcessSelectionParams, ProcessSelection } from "../../types/ProcessSelection";
+import {
+  Result,
+  Results,
+  ProcessSelectionParams,
+  ProcessSelection,
+} from "../../types/ProcessSelection";
 import { apiSlice } from "../api/apiSlice";
 
 const endpointUrl = "/process_selections";
@@ -36,7 +41,13 @@ function getProcessSelection({ id }: { id: string }) {
   return `${endpointUrl}/${id}`;
 }
 
-function attachCoursesMutation({ processSelectionId, courses }: { processSelectionId: string; courses: any[] }) {
+function attachCoursesMutation({
+  processSelectionId,
+  courses,
+}: {
+  processSelectionId: string;
+  courses: any[];
+}) {
   return {
     url: `/process-selection/${processSelectionId}/courses`,
     method: "POST",
@@ -44,7 +55,13 @@ function attachCoursesMutation({ processSelectionId, courses }: { processSelecti
   };
 }
 
-function removeCourseFromProcessSelectionMutation({ process_selection_id, course_id }: { process_selection_id: string; course_id: string }) {
+function removeCourseFromProcessSelectionMutation({
+  process_selection_id,
+  course_id,
+}: {
+  process_selection_id: string;
+  course_id: string;
+}) {
   return {
     url: `/process-selection/course/remove`,
     method: "DELETE",
@@ -74,23 +91,48 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       query: deleteProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
     }),
-    attachCourses: mutation<any, { processSelectionId: string; courses: any[] }>({
-      query: attachCoursesMutation,
-      invalidatesTags: ["ProcessSelections"],
-    }),
-    removeCourseFromProcessSelection: mutation<any, { process_selection_id: string; course_id: string }>({
+    attachCourses: mutation<any, { processSelectionId: string; courses: any[] }>(
+      {
+        query: attachCoursesMutation,
+        invalidatesTags: ["ProcessSelections"],
+      }
+    ),
+    removeCourseFromProcessSelection: mutation<
+      any,
+      { process_selection_id: string; course_id: string }
+    >({
       query: removeCourseFromProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
     }),
-    exportApplicationsCsv: query<Blob, string>({
-      query: (processSelectionId) => ({
-        url: `${endpointUrl}/${processSelectionId}/applications/export`,
-        method: "GET",
-        // aqui tipamos como Response para TS não reclamar de `any`
-        responseHandler: async (response: Response) => {
-          return response.blob();
-        },
-      }),
+
+    exportApplicationsCsv: query<
+      Blob,
+      { processSelectionId: string; enemYear?: number; onlyEnem?: boolean }
+    >({
+      query: ({ processSelectionId, enemYear, onlyEnem }) => {
+        const params = new URLSearchParams();
+
+        if (typeof enemYear === "number") {
+          params.append("enem_year", enemYear.toString());
+        }
+
+        if (onlyEnem) {
+          params.append("only_enem", "1");
+        }
+
+        const qs = params.toString();
+        const urlWithParams = qs
+          ? `${endpointUrl}/${processSelectionId}/applications/export?${qs}`
+          : `${endpointUrl}/${processSelectionId}/applications/export`;
+
+        return {
+          url: urlWithParams,
+          method: "GET",
+          responseHandler: async (response: Response) => {
+            return response.blob();
+          },
+        };
+      },
       providesTags: [],
     }),
   }),

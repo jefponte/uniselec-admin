@@ -1,18 +1,15 @@
-// features/enemScores/enemScoresApiSlice.ts
 import {
   Result,
   Results,
   EnemScoreParams,
   EnemScore,
-  ImportSummary as Summary,      // ↳ tipo da resposta do import
+  ImportSummary as Summary,
+  EnemScoresSummary,
 } from "../../types/EnemScore";
 import { apiSlice } from "../api/apiSlice";
 
 const endpointUrl = "/enem_scores";
 
-/* ---------------------------------------------------------- */
-/* Helpers                                                    */
-/* ---------------------------------------------------------- */
 
 function parseQueryParams(params: EnemScoreParams) {
   const query = new URLSearchParams();
@@ -44,7 +41,6 @@ function getEnemScore({ id }: { id: string }) {
   return `${endpointUrl}/${id}`;
 }
 
-/* ----------------------- import --------------------------- */
 
 type ImportPayload = {
   file: File;
@@ -58,6 +54,16 @@ function importEnemScoresMutation(payload: ImportPayload) {
 
   return { url: `${endpointUrl}/import`, method: "POST", body: form };
 }
+
+
+type SummaryParams = {
+  processSelectionId: number;
+};
+
+function getEnemScoresSummaryUrl({ processSelectionId }: SummaryParams) {
+  return `${endpointUrl}/summary/${processSelectionId}`;
+}
+
 /* ---------------------------------------------------------- */
 /* Slice                                                      */
 /* ---------------------------------------------------------- */
@@ -90,6 +96,11 @@ export const enemScoresApiSlice = apiSlice.injectEndpoints({
       query: importEnemScoresMutation,
       invalidatesTags: ["EnemScores", "ApplicationOutcomes"],
     }),
+
+    getEnemScoresSummary: query<EnemScoresSummary, SummaryParams>({
+      query: getEnemScoresSummaryUrl,
+      providesTags: ["EnemScores"],
+    }),
   }),
 });
 
@@ -104,4 +115,5 @@ export const {
   useUpdateEnemScoreMutation,
   useDeleteEnemScoreMutation,
   useImportEnemScoresMutation,
+  useGetEnemScoresSummaryQuery,
 } = enemScoresApiSlice;

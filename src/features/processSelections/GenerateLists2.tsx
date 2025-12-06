@@ -5,7 +5,7 @@ import { useGetApplicationOutcomesQuery } from '../applicationOutcomes/applicati
 import { CategoryCards } from '../applicationOutcomes/components/CategoryCards';
 import { useGetProcessSelectionQuery } from './processSelectionSlice';
 
-const GenerateLists = () => {
+const GenerateLists2 = () => {
     const { id: processSelectionId } = useParams<{ id: string }>();
     if (!processSelectionId) {
         return <Typography variant="h6" color="error">Selecione um Processo Seletivo</Typography>;
@@ -23,7 +23,7 @@ const GenerateLists = () => {
         <Card>
             <CardContent>
                 <Typography variant="h5" gutterBottom>
-                    2. Resolver pendências
+                    3. Gerar Lista de Classificação.
                 </Typography>
                 <Box
                     sx={{
@@ -36,14 +36,13 @@ const GenerateLists = () => {
 
                     <Button
                         component={Link}
-                        to={`/deferidos-indeferidos/${processSelectionId}`}
+                        to={`/applications-results?process_selection_id=${processSelectionId}`}
                         variant="contained"
                         sx={{ fontSize: '12px' }}
                         disabled={outcomesData?.meta?.total === 0}
                     >
-                       Examinar Pendências
+                        Classificação Geral
                     </Button>
-
 
                 </Box>
             </CardContent>
@@ -51,4 +50,4 @@ const GenerateLists = () => {
     )
 }
 
-export default GenerateLists
+export { GenerateLists2 };
