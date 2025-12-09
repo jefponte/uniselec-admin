@@ -29,7 +29,9 @@ const ApplicationOutcomesStep = () => {
                         gap={2}
                         flexWrap="wrap"
                     >
-                        <Button variant="contained">
+                        <Button
+                            disabled={true}
+                            variant="contained">
                             CSV com Notas
                         </Button>
 
