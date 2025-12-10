@@ -224,7 +224,7 @@ export const ConvocationListApplicationTable: React.FC<Props> = ({
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #eee", p: 1 }}>
                     <Link
-                      to={`/application-outcomes/edit/${app.application.id}`}
+                      to={`/application-outcomes/edit/${app?.application?.application_outcome?.id}`}
                       style={{ color: "#1976d2", textDecoration: "none" }}
                     >
                       {app.application?.form_data?.name}

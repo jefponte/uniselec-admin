@@ -58,7 +58,7 @@ function notifyApplicationStatus({ selectionId, statuses }: { selectionId: strin
     statuses && statuses.length > 0
       ? `?${statuses.map((statusValue) => `status[]=${statusValue}`).join("&")}`
       : "";
-  
+
   return {
     url: `/process_selections/${selectionId}/notify-status${queryParams}`,
   };
@@ -85,7 +85,7 @@ export const applicationOutcomesApiSlice = apiSlice.injectEndpoints({
       { selectionId: string }
     >({
       query: generateOutcome,
-      invalidatesTags: ["ApplicationOutcomes"],
+      invalidatesTags: ["ApplicationOutcomes", "Applications", "EnemScores", "ProcessSelections"],
     }),
 
     /* gerar resultados – SEM pendentes */
