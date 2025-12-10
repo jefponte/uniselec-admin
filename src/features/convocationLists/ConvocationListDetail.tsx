@@ -79,7 +79,7 @@ export const ConvocationListDetail = () => {
       ? {
         fixedCacheKey: "convocationList",
         page: 1,
-        perPage: 5000,
+        perPage: 6000,
         filters: {
           convocation_list_id: convocationListId,
           admission_category_id: admissionCategoryId,
@@ -95,7 +95,7 @@ export const ConvocationListDetail = () => {
       ? {
         fixedCacheKey: "convocationList",
         page: 1,
-        perPage: 5000,
+        perPage: 6000,
         filters: {
           convocation_list_id: convocationListId,
           admission_category_id: admissionCategoryId,
