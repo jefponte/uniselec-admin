@@ -56,8 +56,8 @@ const EnemExportNumbers = () => {
 
         const extension = onlyEnem ? "zip" : "csv";
         const baseName = onlyEnem
-            ? "notas-enem"
-            : "notas-enem";
+            ? "inscricoes-enem"
+            : "inscricoes-enem";
 
         let filename = `${baseName}-${processSelectionId}`;
         if (enemYear) {
