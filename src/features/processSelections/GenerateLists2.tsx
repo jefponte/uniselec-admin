@@ -23,7 +23,7 @@ const GenerateLists2 = () => {
         <Card>
             <CardContent>
                 <Typography variant="h5" gutterBottom>
-                    3. Gerar Lista de Classificação.
+                    3. Processar a Classificação
                 </Typography>
                 <Box
                     sx={{
