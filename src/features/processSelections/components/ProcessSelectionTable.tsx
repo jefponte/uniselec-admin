@@ -110,6 +110,17 @@ export function ProcessSelectionTable({
           >
             Selecionar
           </Button>
+          {params.row.status === "Rascunho" && (
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={() => handleOpenConfirm(params.row.id)}
+              disabled={isLoading}
+            >
+              Apagar
+            </Button>
+          )}
         </Box>
       ),
     },
