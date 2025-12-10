@@ -41,7 +41,7 @@ const ApplicationResults = () => {
     shouldFetchOutcomes
       ? {
         page: 1,
-        perPage: 5000,
+        perPage: 6000,
         filters: {
           process_selection_id: processSelectionId,
           admission_category_id: admissionCategoryId,

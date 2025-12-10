@@ -168,7 +168,17 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: [],
     }),
-
+    exportEnemOutcomesPdf: query<
+      Blob,
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) => ({
+        url: `/process-selections/${processSelectionId}/export-enem-outcomes-pdf`,
+        method: "GET",
+        responseHandler: async (response: Response) => response.blob(),
+      }),
+      providesTags: [],
+    }),
   }),
 });
 
@@ -183,4 +193,5 @@ export const {
   useLazyExportApplicationsCsvQuery,
   useLazyExportEnemScoresCsvQuery,
   useLazyExportEnemOutcomesCsvQuery,
+  useLazyExportEnemOutcomesPdfQuery,
 } = processSelectionsApiSlice;
