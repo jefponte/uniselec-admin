@@ -72,7 +72,15 @@ const GenerateLists: React.FC = () => {
                         {errorMsg}
                     </Alert>
                 )}
-
+                {enemScoresSummary?.total_pending_outcomes ? (<>
+                    <Alert severity="error" sx={{ mt: 2 }}>
+                        {enemScoresSummary?.total_pending_outcomes} pendencias
+                    </Alert>
+                </>) : (<>
+                    <Alert severity="success" sx={{ mt: 2 }}>
+                        Nenhum pendência.
+                    </Alert>
+                </>)}
                 <Box
                     sx={{
                         display: 'flex',
@@ -81,6 +89,8 @@ const GenerateLists: React.FC = () => {
                         mt: errorMsg ? 0 : 2,
                     }}
                 >
+
+
                     <Button
                         component={Link}
                         to={`/deferidos-indeferidos/${processSelectionId}`}
