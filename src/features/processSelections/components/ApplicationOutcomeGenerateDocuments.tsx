@@ -276,7 +276,7 @@ export function ApplicationOutcomeGenerateDocuments({
         ],
       ],
       body: rows,
-      startY: margin + 100,
+      startY: margin + 120,
       styles: {
         overflow: "linebreak",
         cellWidth: "wrap",
