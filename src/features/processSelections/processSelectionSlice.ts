@@ -75,6 +75,24 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       query: getProcessSelections,
       providesTags: ["ProcessSelections"],
     }),
+    exportEnemScoresCsv: query<
+      Blob,
+      { processSelectionId: string; enemYear?: number }
+    >({
+      query: ({ processSelectionId, enemYear }) => {
+        const params = new URLSearchParams();
+        if (typeof enemYear === 'number') {
+          params.append('enem_year', enemYear.toString());
+        }
+        const qs = params.toString();
+        return {
+          url: `/process-selections/${processSelectionId}/export-enem-csv${qs ? `?${qs}` : ''}`,
+          method: 'GET',
+          responseHandler: async (response: Response) => response.blob(),
+        };
+      },
+      providesTags: [],
+    }),
     getProcessSelection: query<Result, { id: string }>({
       query: getProcessSelection,
       providesTags: ["ProcessSelections"],
@@ -103,6 +121,21 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
     >({
       query: removeCourseFromProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
+    }),
+    exportEnemOutcomesCsv: query<Blob, { processSelectionId: string; enemYear?: number }>({
+      query: ({ processSelectionId, enemYear }) => {
+        const params = new URLSearchParams();
+        if (typeof enemYear === 'number') {
+          params.append('enem_year', enemYear.toString());
+        }
+        const qs = params.toString();
+        return {
+          url: `/process-selections/${processSelectionId}/export-enem-outcomes${qs ? `?${qs}` : ''}`,
+          method: 'GET',
+          responseHandler: async (response: Response) => response.blob(),
+        };
+      },
+      providesTags: [],
     }),
 
     exportApplicationsCsv: query<
@@ -135,6 +168,7 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: [],
     }),
+
   }),
 });
 
@@ -147,4 +181,6 @@ export const {
   useAttachCoursesMutation,
   useRemoveCourseFromProcessSelectionMutation,
   useLazyExportApplicationsCsvQuery,
+  useLazyExportEnemScoresCsvQuery,
+  useLazyExportEnemOutcomesCsvQuery,
 } = processSelectionsApiSlice;
