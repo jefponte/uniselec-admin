@@ -46,9 +46,10 @@ const ApplicationResults = () => {
           process_selection_id: processSelectionId,
           admission_category_id: admissionCategoryId,
           course_id: courseId,
+          status: "approved",
         },
       }
-      : // não faz consulta se não deve
+      :
       { skip: true } as any
   );
 

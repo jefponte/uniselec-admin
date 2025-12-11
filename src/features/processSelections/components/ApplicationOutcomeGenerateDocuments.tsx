@@ -49,16 +49,47 @@ export function ApplicationOutcomeGenerateDocuments({
   course,
   vacancies,
 }: Props) {
+  const getBirthTimestamp = (outcome: ApplicationOutcome): number | null => {
+    const source = outcome.application?.birthdate_source;
+
+    // Se a fonte for o ENEM, pegar do enem_score.scores.birthdate (dd/MM/yyyy)
+    if (source === "enem") {
+      const brDate = outcome.application?.enem_score?.scores?.birthdate;
+      if (!brDate) return null;
+
+      // Formato esperado: dd/MM/yyyy
+      const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(brDate);
+      if (!match) return null;
+
+      const [, dd, mm, yyyy] = match;
+      const day = parseInt(dd, 10);
+      const month = parseInt(mm, 10) - 1; // mês em JS é 0-based
+      const year = parseInt(yyyy, 10);
+
+      const date = new Date(year, month, day);
+      const ts = date.getTime();
+      return Number.isNaN(ts) ? null : ts;
+    }
+
+    // Caso contrário, usar a data que já vem do form_data.birthdate
+    const isoDate = outcome.application?.form_data?.birthdate;
+    if (!isoDate) return null;
+
+    const date = new Date(isoDate);
+    const ts = date.getTime();
+    return Number.isNaN(ts) ? null : ts;
+  };
+
 
   const sortByCriteria = (a: ApplicationOutcome, b: ApplicationOutcome): number => {
     /* 1. nota final */
     if (b.final_score !== a.final_score) return b.final_score - a.final_score;
 
-    /* 2. idade – mais velho primeiro */
-    const bornA = Date.parse(a.application?.form_data?.birthdate ?? "");
-    const bornB = Date.parse(b.application?.form_data?.birthdate ?? "");
-    if (!Number.isNaN(bornA) && !Number.isNaN(bornB) && bornA !== bornB) {
-      return bornA - bornB;               // quanto menor a data, mais velho
+    const bornA = getBirthTimestamp(a);
+    const bornB = getBirthTimestamp(b);
+    if (bornA !== null && bornB !== null && bornA !== bornB) {
+      // quanto menor a data, mais velho
+      return bornA - bornB;
     }
 
     /* 3. notas por área (ordem fixa) */
@@ -104,7 +135,7 @@ export function ApplicationOutcomeGenerateDocuments({
             new Paragraph({
               children: [
                 new TextRun({
-                  text: "EDITAL PROGRAD Nº 12/2024, DE 31 DE JULHO DE 2024",
+                  text: "Texto a ser alterado",
                   bold: true,
                 }),
               ],
@@ -113,7 +144,7 @@ export function ApplicationOutcomeGenerateDocuments({
             new Paragraph({
               children: [
                 new TextRun({
-                  text: "PROCESSO SELETIVO UNILAB – (MODELO SISU)",
+                  text: "Texto a ser alterado",
                   bold: true,
                 }),
               ],
@@ -122,7 +153,7 @@ export function ApplicationOutcomeGenerateDocuments({
             new Paragraph({
               children: [
                 new TextRun({
-                  text: "Curso de Medicina - Baturité",
+                  text: "Texto a ser alterado",
                   bold: true,
                 }),
               ],
@@ -131,7 +162,7 @@ export function ApplicationOutcomeGenerateDocuments({
             new Paragraph({
               children: [
                 new TextRun({
-                  text: `Classificação Geral: AAA`,
+                  text: `Texto a ser alterado: AAA`,
                   bold: true,
                 }),
               ],
