@@ -4,6 +4,8 @@ Executar as migrations:
 
 
 
+
+
 ### Arquitetura da solução
 ```mermaid
 flowchart TD
