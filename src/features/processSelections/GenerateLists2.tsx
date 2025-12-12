@@ -1,12 +1,22 @@
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useGetApplicationOutcomesQuery } from '../applicationOutcomes/applicationOutcomeSlice';
 import { CategoryCards } from '../applicationOutcomes/components/CategoryCards';
 import { useGetProcessSelectionQuery } from './processSelectionSlice';
+import { useGetEnemScoresSummaryQuery } from '../enemScores/enemScoreSlice';
 
 const GenerateLists2 = () => {
     const { id: processSelectionId } = useParams<{ id: string }>();
+
+
+    const {
+        data: enemScoresSummary,
+        isLoading: isLoadingSummary,
+        isFetching: isFetchingSummary,
+        isError: isErrorSummary
+    } = useGetEnemScoresSummaryQuery({ processSelectionId: Number(processSelectionId) });
+
     if (!processSelectionId) {
         return <Typography variant="h6" color="error">Selecione um Processo Seletivo</Typography>;
     }
@@ -39,7 +49,7 @@ const GenerateLists2 = () => {
                         to={`/applications-results?process_selection_id=${processSelectionId}`}
                         variant="contained"
                         sx={{ fontSize: '12px' }}
-                        disabled={outcomesData?.meta?.total === 0}
+                        disabled={(outcomesData?.meta?.total === 0 || !!enemScoresSummary?.total_pending_outcomes)}
                     >
                         Classificação Geral
                     </Button>

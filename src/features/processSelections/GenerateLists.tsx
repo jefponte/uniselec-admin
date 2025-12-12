@@ -103,7 +103,8 @@ const GenerateLists: React.FC = () => {
 
                     <Button
                         variant="outlined"
-                        onClick={handleDownloadPdf}
+                        component={Link}
+                        to={`/deferidos-indeferidos/${processSelectionId}`}
                         disabled={!enemScoresSummary || enemScoresSummary.total_pending_outcomes > 0 || isGeneratingPdf || !hasOutcomes}
                     >
                         {isGeneratingPdf ? 'Gerando PDF...' : 'Download PDF Deferidos/Indeferidos'}

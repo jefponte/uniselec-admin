@@ -14,6 +14,7 @@ import {
   DialogActions,
   Grid,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -31,9 +32,20 @@ import ChainsEditor from './components/ChainsEditor';
 import { AdmissionCategory } from '../../types/AdmissionCategory';
 import { ProcessSelection, RemapRules } from '../../types/ProcessSelection';
 import { useSnackbar } from 'notistack';
+import { useGetEnemScoresSummaryQuery } from '../enemScores/enemScoreSlice';
 
 export const ProcessSelectionConvocation = () => {
   const { id } = useParams<{ id: string }>();
+
+
+
+  const {
+    data: enemScoresSummary,
+    isLoading: isLoadingSummary,
+    isFetching: isFetchingSummary,
+    isError: isErrorSummary
+  } = useGetEnemScoresSummaryQuery({ processSelectionId: Number(id) });
+
   const navigate = useNavigate();
 
   const {
@@ -184,7 +196,15 @@ export const ProcessSelectionConvocation = () => {
             <Typography variant="h5" gutterBottom>
               Listas de Convocação
             </Typography>
-
+            {enemScoresSummary?.total_pending_outcomes ? (<>
+              <Alert severity="error" sx={{ mt: 2 }}>
+                Existem pendencias a serem resolvidas na etapa anterior.
+              </Alert>
+            </>) : (<>
+              <Alert severity="success" sx={{ mt: 2 }}>
+                Nenhum pendência.
+              </Alert>
+            </>)}
             <Box
               sx={{
                 display: 'flex',
@@ -200,6 +220,7 @@ export const ProcessSelectionConvocation = () => {
                 variant="outlined"
                 color="secondary"
                 sx={{ fontSize: '12px' }}
+                disabled={enemScoresSummary?.total_pending_outcomes != null && enemScoresSummary?.total_pending_outcomes > 0}
               >
                 Listas de Convocação
               </Button>
@@ -209,6 +230,7 @@ export const ProcessSelectionConvocation = () => {
                 variant="outlined"
                 color="secondary"
                 sx={{ fontSize: '12px' }}
+                disabled={enemScoresSummary?.total_pending_outcomes != null && enemScoresSummary?.total_pending_outcomes > 0}
               >
                 Criar Lista de Convocação
               </Button>
