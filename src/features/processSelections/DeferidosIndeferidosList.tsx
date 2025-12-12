@@ -106,8 +106,7 @@ const DeferidosIndeferidosList = () => {
         const topMargin = marginCm * pt;
         const bottomMargin = marginCm * pt;
 
-        const doc = new jsPDF("p", "pt", "a4");
-        import("jspdf-autotable");
+        const doc = new jsPDF({ orientation: "p", unit: "pt", format: "a4", compress: true });
 
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
@@ -178,7 +177,16 @@ const DeferidosIndeferidosList = () => {
     if (error) {
         return <Typography>Error fetching applicationOutcomes</Typography>;
     }
+    const getSortName = (outcome: ApplicationOutcome): string => {
+        const app = outcome.application;
+        if (!app) return "";
 
+        if (app.name_source === "enem") {
+            return (app.enem_score?.scores?.name || "").toUpperCase();
+        }
+
+        return (app.form_data?.name || "").toUpperCase();
+    };
     const deferidosIndeferidos: ProcessedApplicationOutcome[] = (outcomesData?.data || [])
         .filter((outcome: ApplicationOutcome) => {
             if (filterStatus === "all") return true;
@@ -195,9 +203,7 @@ const DeferidosIndeferidosList = () => {
                     : "",
         }))
         .sort((a, b) =>
-            (a.application?.form_data?.name || "").localeCompare(
-                b.application?.form_data?.name || ""
-            )
+            getSortName(a).localeCompare(getSortName(b), "pt-BR")
         );
 
     const wrapWithSnack = (promise: Promise<{ message: string }>) => {
