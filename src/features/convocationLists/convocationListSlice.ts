@@ -113,6 +113,32 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       query: deleteConvocationListMutation,
       invalidatesTags: ["ConvocationLists"],
     }),
+    exportConvocationListCsv: query<
+      Blob,
+      { convocationListId: string;  }
+    >({
+      query: ({ convocationListId }) => {
+        return {
+          url: `${endpointUrl}/${convocationListId}/export-csv`,
+          method: "GET",
+          responseHandler: async (response: Response) => {
+            return response.blob();
+          },
+        };
+      },
+      providesTags: [],
+    }),
+    exportConvocationListPdfs: query<
+      Blob,
+      { convocationListId: string }
+    >({
+      query: ({ convocationListId }) => ({
+        url: `/convocation_lists/${convocationListId}/export-pdfs`,
+        method: "GET",
+        responseHandler: async (response: Response) => response.blob(),
+      }),
+      providesTags: [],
+    }),
   }),
 });
 
@@ -127,4 +153,6 @@ export const {
   useAllocateSeatsMutation,
   usePublishConvocationListMutation,
   useRedistributeSeatsMutation,
+  useLazyExportConvocationListCsvQuery,
+  useLazyExportConvocationListPdfsQuery
 } = processSelectionsApiSlice;

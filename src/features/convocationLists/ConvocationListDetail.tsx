@@ -35,6 +35,8 @@ import { useGetConvocationListApplicationsQuery } from './convocationListApplica
 import { ConvocationListApplicationTable } from './components/ConvocationListApplicationTable';
 import { ConvocationListSeatTable } from './components/ConvocationListSeatTable';
 import { useGetConvocationListSeatsQuery } from './convocationListSeatSlice';
+import { DownloadConvocationCsv } from './components/DownloadConvocationCsv';
+import { DownloadConvocationPdfs } from './components/DownloadConvocationPdfs';
 
 
 const vacancyPlanToSeats = (plan: VacancyPlan) =>
@@ -79,7 +81,7 @@ export const ConvocationListDetail = () => {
       ? {
         fixedCacheKey: "convocationList",
         page: 1,
-        perPage: 6000,
+        perPage: 1000,
         filters: {
           convocation_list_id: convocationListId,
           admission_category_id: admissionCategoryId,
@@ -95,7 +97,7 @@ export const ConvocationListDetail = () => {
       ? {
         fixedCacheKey: "convocationList",
         page: 1,
-        perPage: 6000,
+        perPage: 1000,
         filters: {
           convocation_list_id: convocationListId,
           admission_category_id: admissionCategoryId,
@@ -182,37 +184,48 @@ export const ConvocationListDetail = () => {
   return (
     <Box sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3 }}>
-        <Typography variant="h4">{convocationList.name}</Typography>
-
-        <Grid container spacing={2} sx={{ mt: 3 }}>
-          {/* processar distribuição */}
-          {convocationList.status === 'draft' && (
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={publishStatus.isLoading}
-                onClick={() =>
-                  runServiceWithToast(
-                    publishConvocationList,
-                    { id: convocationListId! },
-                    'Convocação Finalizada com sucesso',
-                  )
-                }
-              >
-                Finalizar Convocação
-              </Button>
-            </Grid>
-          )}
-
-          {/* voltar */}
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          {/* Título */}
           <Grid item>
-            <Button
-              component={Link}
-              to={`/process-selections/${processSelectionId}/convocation-lists`}
-            >
-              Voltar
-            </Button>
+            <Typography variant="h4">
+              {convocationList.name}
+            </Typography>
+          </Grid>
+
+          {/* Ações */}
+          <Grid item>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              {convocationList.status === 'draft' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={publishStatus.isLoading}
+                  onClick={() =>
+                    runServiceWithToast(
+                      publishConvocationList,
+                      { id: convocationListId! },
+                      'Convocação Finalizada com sucesso',
+                    )
+                  }
+                >
+                  Finalizar Convocação
+                </Button>
+              )}
+
+              <DownloadConvocationPdfs listId={convocationListId!} />
+
+              <Button
+                component={Link}
+                to={`/process-selections/${processSelectionId}/convocation-lists`}
+              >
+                Voltar
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </Paper>
