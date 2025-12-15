@@ -216,8 +216,11 @@ export const ConvocationListDetail = () => {
                   Finalizar Convocação
                 </Button>
               )}
+              {convocationList.status != 'draft' && (
+                <DownloadConvocationPdfs listId={convocationListId!} />
+              )}
 
-              <DownloadConvocationPdfs listId={convocationListId!} />
+
 
               <Button
                 component={Link}
