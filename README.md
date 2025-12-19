@@ -2,7 +2,6 @@ Executar as migrations:
 
     docker exec -it uniselec-api bash -c "php artisan migrate"
 
-
 ### Arquitetura da solução
 ```mermaid
 flowchart TD
