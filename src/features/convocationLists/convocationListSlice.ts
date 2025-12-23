@@ -115,7 +115,7 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
     }),
     exportConvocationListCsv: query<
       Blob,
-      { convocationListId: string;  }
+      { convocationListId: string; }
     >({
       query: ({ convocationListId }) => {
         return {
@@ -139,6 +139,20 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: [],
     }),
+    getConvocationSummaryByCategory: query<
+      {
+        listId: string;
+        listName: string;
+        counts: Record<string, number>
+      }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) => ({
+        url: `/process-selections/${processSelectionId}/convocation-summary`,
+        method: 'GET',
+      }),
+      providesTags: ['ConvocationLists'],
+    }),
   }),
 });
 
@@ -154,5 +168,6 @@ export const {
   usePublishConvocationListMutation,
   useRedistributeSeatsMutation,
   useLazyExportConvocationListCsvQuery,
-  useLazyExportConvocationListPdfsQuery
+  useLazyExportConvocationListPdfsQuery,
+   useGetConvocationSummaryByCategoryQuery,
 } = processSelectionsApiSlice;
