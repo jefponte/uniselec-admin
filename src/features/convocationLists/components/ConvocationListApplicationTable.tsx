@@ -304,7 +304,7 @@ export const ConvocationListApplicationTable: React.FC<Props> = ({
                             }}
                           >
 
-                            {app.result_status === "classifiable" ? " Convocar" : "Convocar"}
+                            Convocar
                           </Button>
 
                         </Tooltip>
