@@ -37,6 +37,7 @@ import { ConvocationListSeatTable } from './components/ConvocationListSeatTable'
 import { useGetConvocationListSeatsQuery } from './convocationListSeatSlice';
 import { DownloadConvocationCsv } from './components/DownloadConvocationCsv';
 import { DownloadConvocationPdfs } from './components/DownloadConvocationPdfs';
+import { ConvocationSummaryByCategory } from './components/ConvocationSummaryByCategory';
 
 
 const vacancyPlanToSeats = (plan: VacancyPlan) =>
@@ -183,6 +184,7 @@ export const ConvocationListDetail = () => {
 
   return (
     <Box sx={{ mt: 4, mb: 4 }}>
+
       <Paper sx={{ p: 3 }}>
         <Grid
           container
@@ -257,7 +259,7 @@ export const ConvocationListDetail = () => {
             </Grid>
           </Grid>
         </Paper>
-
+        <ConvocationSummaryByCategory processSelectionId={processSelectionId!} />
       </Box>
       {!hasAllParams ? (
         <Card variant="outlined">
@@ -287,6 +289,7 @@ export const ConvocationListDetail = () => {
                 </Typography>
               </Paper>
               <ConvocationListApplicationTable
+                convocationList={convocationList}
                 convocationListApplications={dataApplication}
                 isFetching={isFetchingApplication}
               />
