@@ -129,9 +129,7 @@ export const ApplicationsStep = () => {
 
           <Button
             variant="outlined"
-            onClick={() =>
-              alert("Funcionalidade de estatísticas em desenvolvimento")
-            }
+            onClick={() => navigate(`/process-selections/details/${processSelectionId}/summary`)}
           >
             Estatísticas
           </Button>
