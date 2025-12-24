@@ -16,6 +16,7 @@ export type EnemScoresSummary = {
   total_with_score: number;
   total_without_score: number;
   total_not_found_in_inep_file: number;
+  total_pending_outcomes: number;
 };
 export interface EnemScore {
   id?: number;

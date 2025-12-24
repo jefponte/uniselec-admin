@@ -56,12 +56,12 @@ const EnemExportNumbers = () => {
 
         const extension = onlyEnem ? "zip" : "csv";
         const baseName = onlyEnem
-            ? "enem_numbers_process"
-            : "inscricoes_process";
+            ? "inscricoes-enem"
+            : "inscricoes-enem";
 
-        let filename = `${baseName}_${processSelectionId}`;
+        let filename = `${baseName}-${processSelectionId}`;
         if (enemYear) {
-            filename += `_enem${enemYear}`;
+            filename += `-${enemYear}`;
         }
         filename += `.${extension}`;
 

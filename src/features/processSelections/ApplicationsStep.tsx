@@ -58,7 +58,7 @@ export const ApplicationsStep = () => {
     const extension = onlyEnem ? "zip" : "csv";
     const baseName = onlyEnem
       ? "enem_numbers_process"
-      : "inscricoes_process";
+      : "inscricoes";
 
     let filename = `${baseName}_${processSelectionId}`;
     if (enemYear) {

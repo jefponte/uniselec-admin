@@ -33,6 +33,7 @@ import {
 import useTranslate from "../../polyglot/useTranslate";
 import { Link } from "react-router-dom";
 import { Results } from "../../../types/ConvocationListApplication";
+import { ConvocationList } from "../../../types/ConvocationList";
 
 type ActionType = "call" | "accept" | "decline" | "reject";
 
@@ -62,11 +63,13 @@ const ACTION_LABELS: Record<
 
 type Props = {
   convocationListApplications?: Results;
+  convocationList?: ConvocationList;
   isFetching: boolean;
 };
 
 export const ConvocationListApplicationTable: React.FC<Props> = ({
   convocationListApplications,
+  convocationList,
   isFetching,
 }) => {
   // mutations
@@ -159,7 +162,9 @@ export const ConvocationListApplicationTable: React.FC<Props> = ({
 
   return (
     <Box mt={2}>
+
       <Paper sx={{ p: 3, mb: 2 }}>
+
         {/* switch to hide/show skipped */}
         <FormControlLabel
           control={
@@ -224,7 +229,7 @@ export const ConvocationListApplicationTable: React.FC<Props> = ({
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #eee", p: 1 }}>
                     <Link
-                      to={`/application-outcomes/edit/${app.application.id}`}
+                      to={`/application-outcomes/edit/${app?.application?.application_outcome?.id}`}
                       style={{ color: "#1976d2", textDecoration: "none" }}
                     >
                       {app.application?.form_data?.name}
@@ -277,19 +282,33 @@ export const ConvocationListApplicationTable: React.FC<Props> = ({
                   >
                     {["pending", "called_out_of_quota"].includes(
                       app.convocation_status
-                    ) && (
-                      <Tooltip title="Convocar candidato">
-                        <Button
-                          variant="contained"
-                          size="small"
-                          disabled={loadingCall}
-                          onClick={() => openConfirm(app.id, "call")}
-                          sx={{ mr: 1 }}
-                        >
-                          Convocar
-                        </Button>
-                      </Tooltip>
-                    )}
+                    ) && convocationList?.status === "draft" && (
+                        <Tooltip title="Convocar candidato">
+                          <Button
+                            variant="contained"
+                            size="small"
+                            disabled={loadingCall}
+                            onClick={() => openConfirm(app.id, "call")}
+                            sx={{
+                              mr: 1,
+                              backgroundColor: theme =>
+                                app.result_status === "classifiable"
+                                  ? theme.palette.warning.main
+                                  : theme.palette.primary.main,
+                              "&:hover": {
+                                backgroundColor: theme =>
+                                  app.result_status === "classifiable"
+                                    ? theme.palette.warning.dark
+                                    : theme.palette.primary.dark,
+                              },
+                            }}
+                          >
+
+                            Convocar
+                          </Button>
+
+                        </Tooltip>
+                      )}
                     {app.convocation_status === "called" &&
                       app.response_status === "pending" && (
                         <ButtonGroup size="small" variant="outlined">
