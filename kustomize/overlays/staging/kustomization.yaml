@@ -25,4 +25,4 @@ configMapGenerator:
 
 images:
 - name: dti-registro.unilab.edu.br/unilab/uniselec-admin
-  newTag: stg-469de9ce
+  newTag: stg-f2ed67ae
