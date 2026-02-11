@@ -44,6 +44,7 @@ import { ConvocationListList } from "./features/convocationLists/ConvocationList
 import { ConvocationListCreate } from "./features/convocationLists/ConvocationListCreate";
 import { ConvocationListDetail } from "./features/convocationLists/ConvocationListDetail";
 import { ConvocationListEdit } from "./features/convocationLists/ConvocationListEdit";
+import { SummaryPage } from "./features/processSelections/SummaryPage";
 
 
 
@@ -67,8 +68,11 @@ function App() {
 
           <Route path="/process-selections" element={<ProtectedRoute><ProcessSelectionList /></ProtectedRoute>} />
           <Route path="/process-selections/edit/:id" element={<ProtectedRoute><ProcessSelectionEdit /></ProtectedRoute>} />
+
+          <Route path="/process-selections/details/:id/step/:step" element={<ProtectedRoute><ProcessSelectionDetailStepper /></ProtectedRoute>} />
           <Route path="/process-selections/details/:id" element={<ProtectedRoute><ProcessSelectionDetailStepper /></ProtectedRoute>} />
           <Route path="/process-selections/details2/:id" element={<ProtectedRoute><ProcessSelectionDetails /></ProtectedRoute>} />
+          <Route path="/process-selections/details/:id/summary" element={<ProtectedRoute><SummaryPage /></ProtectedRoute>}/>
           <Route path="/process-selections/create" element={<ProtectedRoute><ProcessSelectionCreate /></ProtectedRoute>} />
 
           <Route path="/admission-categories" element={<ProtectedRoute><AdmissionCategoryList /></ProtectedRoute>} />
@@ -95,6 +99,7 @@ function App() {
           <Route path="/process-selections/:id/convocation-lists/detail/:convocationListId" element={<ProtectedRoute><ConvocationListDetail /></ProtectedRoute>} />
           <Route path="/process-selections/:id/convocation-lists/edit/:convocationListId" element={<ProtectedRoute><ConvocationListEdit /></ProtectedRoute>} />
           <Route path="/process-selections/:id/convocation-lists/create" element={<ProtectedRoute><ConvocationListCreate /></ProtectedRoute>} />
+
           <Route path="/applications" element={<ProtectedRoute><ApplicationList /></ProtectedRoute>} />
           <Route path="/applications/detail/:id" element={<ProtectedRoute><ApplicationDetail /></ProtectedRoute>} />
 

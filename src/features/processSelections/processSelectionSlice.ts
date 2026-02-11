@@ -1,4 +1,9 @@
-import { Result, Results, ProcessSelectionParams, ProcessSelection } from "../../types/ProcessSelection";
+import {
+  Result,
+  Results,
+  ProcessSelectionParams,
+  ProcessSelection,
+} from "../../types/ProcessSelection";
 import { apiSlice } from "../api/apiSlice";
 
 const endpointUrl = "/process_selections";
@@ -36,7 +41,13 @@ function getProcessSelection({ id }: { id: string }) {
   return `${endpointUrl}/${id}`;
 }
 
-function attachCoursesMutation({ processSelectionId, courses }: { processSelectionId: string; courses: any[] }) {
+function attachCoursesMutation({
+  processSelectionId,
+  courses,
+}: {
+  processSelectionId: string;
+  courses: any[];
+}) {
   return {
     url: `/process-selection/${processSelectionId}/courses`,
     method: "POST",
@@ -44,7 +55,13 @@ function attachCoursesMutation({ processSelectionId, courses }: { processSelecti
   };
 }
 
-function removeCourseFromProcessSelectionMutation({ process_selection_id, course_id }: { process_selection_id: string; course_id: string }) {
+function removeCourseFromProcessSelectionMutation({
+  process_selection_id,
+  course_id,
+}: {
+  process_selection_id: string;
+  course_id: string;
+}) {
   return {
     url: `/process-selection/course/remove`,
     method: "DELETE",
@@ -57,6 +74,24 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
     getProcessSelections: query<Results, ProcessSelectionParams>({
       query: getProcessSelections,
       providesTags: ["ProcessSelections"],
+    }),
+    exportEnemScoresCsv: query<
+      Blob,
+      { processSelectionId: string; enemYear?: number }
+    >({
+      query: ({ processSelectionId, enemYear }) => {
+        const params = new URLSearchParams();
+        if (typeof enemYear === 'number') {
+          params.append('enem_year', enemYear.toString());
+        }
+        const qs = params.toString();
+        return {
+          url: `/process-selections/${processSelectionId}/export-enem-csv${qs ? `?${qs}` : ''}`,
+          method: 'GET',
+          responseHandler: async (response: Response) => response.blob(),
+        };
+      },
+      providesTags: [],
     }),
     getProcessSelection: query<Result, { id: string }>({
       query: getProcessSelection,
@@ -74,13 +109,109 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       query: deleteProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
     }),
-    attachCourses: mutation<any, { processSelectionId: string; courses: any[] }>({
-      query: attachCoursesMutation,
-      invalidatesTags: ["ProcessSelections"],
-    }),
-    removeCourseFromProcessSelection: mutation<any, { process_selection_id: string; course_id: string }>({
+    attachCourses: mutation<any, { processSelectionId: string; courses: any[] }>(
+      {
+        query: attachCoursesMutation,
+        invalidatesTags: ["ProcessSelections"],
+      }
+    ),
+    removeCourseFromProcessSelection: mutation<
+      any,
+      { process_selection_id: string; course_id: string }
+    >({
       query: removeCourseFromProcessSelectionMutation,
       invalidatesTags: ["ProcessSelections"],
+    }),
+    exportEnemOutcomesCsv: query<Blob, { processSelectionId: string; enemYear?: number }>({
+      query: ({ processSelectionId, enemYear }) => {
+        const params = new URLSearchParams();
+        if (typeof enemYear === 'number') {
+          params.append('enem_year', enemYear.toString());
+        }
+        const qs = params.toString();
+        return {
+          url: `/process-selections/${processSelectionId}/export-enem-outcomes${qs ? `?${qs}` : ''}`,
+          method: 'GET',
+          responseHandler: async (response: Response) => response.blob(),
+        };
+      },
+      providesTags: [],
+    }),
+
+    exportApplicationsCsv: query<
+      Blob,
+      { processSelectionId: string; enemYear?: number; onlyEnem?: boolean }
+    >({
+      query: ({ processSelectionId, enemYear, onlyEnem }) => {
+        const params = new URLSearchParams();
+
+        if (typeof enemYear === "number") {
+          params.append("enem_year", enemYear.toString());
+        }
+
+        if (onlyEnem) {
+          params.append("only_enem", "1");
+        }
+
+        const qs = params.toString();
+        const urlWithParams = qs
+          ? `${endpointUrl}/${processSelectionId}/applications/export?${qs}`
+          : `${endpointUrl}/${processSelectionId}/applications/export`;
+
+        return {
+          url: urlWithParams,
+          method: "GET",
+          responseHandler: async (response: Response) => {
+            return response.blob();
+          },
+        };
+      },
+      providesTags: [],
+    }),
+    exportEnemOutcomesPdf: query<
+      Blob,
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) => ({
+        url: `/process-selections/${processSelectionId}/export-enem-outcomes-pdf`,
+        method: "GET",
+        responseHandler: async (response: Response) => response.blob(),
+      }),
+      providesTags: [],
+    }),
+    getAdmissionCategoryStats: query<
+      { admission_category: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-admission-category?process_selection_id=${processSelectionId}`,
+      providesTags: [], // ou ["Stats"] se quiser invalidar
+    }),
+
+    getCourseStats: query<
+      { course_name: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-course?process_selection_id=${processSelectionId}`,
+      providesTags: [],
+    }),
+
+    getCampusStats: query<
+      { campus_name: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-campus?process_selection_id=${processSelectionId}`,
+      providesTags: [],
+    }),
+    getCourseCategoryStats: query<
+      { course_name: string; admission_category: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-course-category?process_selection_id=${processSelectionId}`,
+      providesTags: [],
     }),
   }),
 });
@@ -92,5 +223,14 @@ export const {
   useGetProcessSelectionQuery,
   useDeleteProcessSelectionMutation,
   useAttachCoursesMutation,
-  useRemoveCourseFromProcessSelectionMutation
+  useRemoveCourseFromProcessSelectionMutation,
+  useLazyExportApplicationsCsvQuery,
+  useLazyExportEnemScoresCsvQuery,
+  useLazyExportEnemOutcomesCsvQuery,
+  useLazyExportEnemOutcomesPdfQuery,
+
+  useGetAdmissionCategoryStatsQuery,
+  useGetCourseStatsQuery,
+  useGetCampusStatsQuery,
+  useGetCourseCategoryStatsQuery,
 } = processSelectionsApiSlice;

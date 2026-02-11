@@ -1,33 +1,26 @@
 import React from 'react'
 import { ApplicationCSVDownload } from '../applications/ApplicationCSVDownload';
 import { EnemScoreImport } from '../enemScores/EnemScoreImport';
-import { Card, CardContent, Grid } from '@mui/material';
+import { Box, Card, CardContent, Grid } from '@mui/material';
 import { useParams, useNavigate } from "react-router-dom";
+import { EnemSummaryCard } from '../enemScores/EnemSummaryCard';
+import { EnemExportNumbers } from '../enemScores/EnemExportNumbers';
 
 
 const ImportEnemScoreStep = () => {
     const { id: processSelectionId } = useParams<{ id: string }>();
     return (
-        <div>
-            <Card>
-                <CardContent>
-                    <h2>Importar Notas do ENEM</h2>
-                    <p>Esta etapa permite importar as notas do ENEM para o sistema.</p>
-                </CardContent>
-            </Card>
-
+        <Box display="flex" flexDirection="column" gap={2}>
             <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={12} md={6}>
-                    <ApplicationCSVDownload />
+                    <EnemExportNumbers />
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <EnemScoreImport />
                 </Grid>
             </Grid>
-        </div>
+        </Box>
     );
 }
-
-
 
 export { ImportEnemScoreStep };

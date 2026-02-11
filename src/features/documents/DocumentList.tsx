@@ -94,7 +94,7 @@ export const DocumentList = ({ processSelectionId }: { processSelectionId: strin
             <CardContent>
               <Typography variant="h6">
                 <a
-                  href={`http://localhost:8000/storage/${doc.path}`}
+                  href={`${apiUrl}/storage/${doc.path}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ textDecoration: "none", color: "inherit" }}
