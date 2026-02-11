@@ -53,9 +53,14 @@ function getApplicationOutcome({ id }: { id: string }) {
   return `${endpointUrl}/${id}`;
 }
 
-function notifyApplicationStatus({ selectionId }: { selectionId: string }) {
+function notifyApplicationStatus({ selectionId, statuses }: { selectionId: string; statuses: string[] }) {
+  const queryParams =
+    statuses && statuses.length > 0
+      ? `?${statuses.map((statusValue) => `status[]=${statusValue}`).join("&")}`
+      : "";
+
   return {
-    url: `/process_selections/${selectionId}/notify-status`,
+    url: `/process_selections/${selectionId}/notify-status${queryParams}`,
   };
 }
 
@@ -80,7 +85,7 @@ export const applicationOutcomesApiSlice = apiSlice.injectEndpoints({
       { selectionId: string }
     >({
       query: generateOutcome,
-      invalidatesTags: ["ApplicationOutcomes"],
+      invalidatesTags: ["ApplicationOutcomes", "Applications", "EnemScores", "ProcessSelections"],
     }),
 
     /* gerar resultados – SEM pendentes */
@@ -95,7 +100,10 @@ export const applicationOutcomesApiSlice = apiSlice.injectEndpoints({
       query: updateApplicationOutcomeMutation,
       invalidatesTags: ["ApplicationOutcomes"],
     }),
-    notifyApplicationStatus: mutation<{ message: string }, { selectionId: string }>({
+    notifyApplicationStatus: mutation<
+      { message: string },
+      { selectionId: string; statuses: string[] }
+    >({
       query: notifyApplicationStatus,
       invalidatesTags: ["ApplicationOutcomes"],
     }),

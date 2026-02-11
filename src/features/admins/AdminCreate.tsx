@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, Alert } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { SelectChangeEvent } from "@mui/material"; // Importação necessária
+import { SelectChangeEvent } from "@mui/material";
 import { Admin } from "../../types/Admin";
 import { useCreateAdminMutation } from "./adminSlice";
 import { AdminForm } from "./components/AdminForm";

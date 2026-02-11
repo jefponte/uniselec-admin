@@ -20,8 +20,17 @@ export const ProcessSelectionEdit = () => {
     status: "draft",
     start_date: "",
     end_date: "",
-    courses: []
+    preliminary_result_date: "",
+    appeal_start_date: "",
+    appeal_end_date: "",
+    final_result_date: "",
+    courses: [],
+    allowed_enem_years: [],
+    admission_categories: [],
+    knowledge_areas: [],
+    bonus_options: []
   });
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,18 +76,31 @@ export const ProcessSelectionEdit = () => {
         description: processSelectionData.data.description,
         start_date: processSelectionData.data.start_date,
         end_date: processSelectionData.data.end_date,
+        preliminary_result_date: processSelectionData.data.preliminary_result_date,
+        appeal_start_date: processSelectionData.data.appeal_start_date,
+        appeal_end_date: processSelectionData.data.appeal_end_date,
+        final_result_date: processSelectionData.data.final_result_date,
         type: processSelectionData.data.type,
         status: processSelectionData.data.status,
         courses: processSelectionData.data.courses || [],
         admission_categories: processSelectionData.data.admission_categories || [],
         knowledge_areas: processSelectionData.data.knowledge_areas || [],
         bonus_options: processSelectionData.data.bonus_options || [],
+        allowed_enem_years: processSelectionData.data.allowed_enem_years || [],
         created_at: processSelectionData.data.created_at,
         updated_at: processSelectionData.data.updated_at
       });
     }
   }, [processSelectionData]);
 
+  useEffect(() => {
+    if (status.isSuccess) {
+      enqueueSnackbar("Processo seletivo atualizado com sucesso!", { variant: "success" });
+    }
+    if (status.isError) {
+      enqueueSnackbar("Falha ao atualizar o processo seletivo.", { variant: "error" });
+    }
+  }, [status.isSuccess, status.isError, enqueueSnackbar]);
 
   return (
     <Box sx={{ mt: 4, mb: 4 }}>

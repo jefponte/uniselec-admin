@@ -54,8 +54,8 @@ export const ApplicationList = () => {
         applications={data}
         isFetching={isFetching}
         paginationModel={{
-          pageSize: 25,
-          page: 0,
+          pageSize: options.perPage,
+          page: options.page - 1,
         }}
         handleSetPaginationModel={setPaginationModel}
         handleFilterChange={handleFilterChange}

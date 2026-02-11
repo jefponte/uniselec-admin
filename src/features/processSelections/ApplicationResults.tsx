@@ -41,14 +41,15 @@ const ApplicationResults = () => {
     shouldFetchOutcomes
       ? {
         page: 1,
-        perPage: 5000,
+        perPage: 6000,
         filters: {
           process_selection_id: processSelectionId,
           admission_category_id: admissionCategoryId,
           course_id: courseId,
+          status: "approved",
         },
       }
-      : // não faz consulta se não deve
+      :
       { skip: true } as any
   );
 

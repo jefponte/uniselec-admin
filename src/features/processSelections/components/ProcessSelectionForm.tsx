@@ -76,7 +76,7 @@ export function ProcessSelectionForm({
   const availableBonusOptions = bonusOptionsData?.data || [];
 
   // Função para tratar a mudança de datas, garantindo o formato UTC para o SQL.
-  const handleDateChange = (field: "start_date" | "end_date") => (newDate: any) => {
+  const handleDateChange = (field: "start_date" | "end_date" | "preliminary_result_date" | "final_result_date" | "appeal_start_date" | "appeal_end_date") => (newDate: any) => {
     if (newDate) {
       const formattedDate = dayjs(newDate).utc().format("YYYY-MM-DD HH:mm:ss");
       setProcessSelection((prev) => ({ ...prev, [field]: formattedDate }));
@@ -180,6 +180,71 @@ export function ProcessSelectionForm({
               </LocalizationProvider>
             </FormControl>
           </Grid>
+
+          {/* Data do resultado preliminar */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Data do Resultado Preliminar"
+                  value={processSelection.preliminary_result_date ? dayjs.utc(processSelection.preliminary_result_date) : null}
+                  onChange={handleDateChange("preliminary_result_date")}
+                  disabled={isdisabled}
+                  ampm={false}
+                  format="DD/MM/YYYY HH:mm"
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+          {/* Data do resultado final */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Data do Resultado Final"
+                  value={processSelection.final_result_date ? dayjs.utc(processSelection.final_result_date) : null}
+                  onChange={handleDateChange("final_result_date")}
+                  disabled={isdisabled}
+                  ampm={false}
+                  format="DD/MM/YYYY HH:mm"
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+          {/* Data de início do período de recurso */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Data de Início do Período de Recurso"
+                  value={processSelection.appeal_start_date ? dayjs.utc(processSelection.appeal_start_date) : null}
+                  onChange={handleDateChange("appeal_start_date")}
+                  disabled={isdisabled}
+                  ampm={false}
+                  format="DD/MM/YYYY HH:mm"
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+          {/* Data final do período de recurso */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Data Final do Período de Recurso"
+                  value={processSelection.appeal_end_date ? dayjs.utc(processSelection.appeal_end_date) : null}
+                  onChange={handleDateChange("appeal_end_date")}
+                  disabled={isdisabled}
+                  ampm={false}
+                  format="DD/MM/YYYY HH:mm"
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
           <Grid item xs={12}>
             <FormControl fullWidth>
               <AllowedEnemYearsSelector

@@ -1,0 +1,63 @@
+import { Alert, Box, Button, Card, CardContent, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useGetApplicationOutcomesQuery } from '../applicationOutcomes/applicationOutcomeSlice';
+import { CategoryCards } from '../applicationOutcomes/components/CategoryCards';
+import { useGetProcessSelectionQuery } from './processSelectionSlice';
+import { useGetEnemScoresSummaryQuery } from '../enemScores/enemScoreSlice';
+
+const GenerateLists2 = () => {
+    const { id: processSelectionId } = useParams<{ id: string }>();
+
+
+    const {
+        data: enemScoresSummary,
+        isLoading: isLoadingSummary,
+        isFetching: isFetchingSummary,
+        isError: isErrorSummary
+    } = useGetEnemScoresSummaryQuery({ processSelectionId: Number(processSelectionId) });
+
+    if (!processSelectionId) {
+        return <Typography variant="h6" color="error">Selecione um Processo Seletivo</Typography>;
+    }
+    const [options, setOptions] = useState({
+        page: 1,
+        perPage: 25,
+        search: "",
+        filters: { process_selection_id: processSelectionId! } as Record<string, string>,
+    });
+    const { data: processSelection, isFetching, refetch } = useGetProcessSelectionQuery({ id: processSelectionId! });
+    const { data: outcomesData, isFetching: isFetchingOutcomeData } = useGetApplicationOutcomesQuery(options);
+    const hasApplicationOutcomes = outcomesData?.data && outcomesData.data.length > 0;
+    return (
+        <Card>
+            <CardContent>
+                <Typography variant="h5" gutterBottom>
+                    3. Processar a Classificação
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        gap: 2,
+                        flexWrap: 'wrap',
+                        mt: 2,
+                    }}
+                >
+
+                    <Button
+                        component={Link}
+                        to={`/applications-results?process_selection_id=${processSelectionId}`}
+                        variant="contained"
+                        sx={{ fontSize: '12px' }}
+                        disabled={(outcomesData?.meta?.total === 0 || !!enemScoresSummary?.total_pending_outcomes)}
+                    >
+                        Classificação Geral
+                    </Button>
+
+                </Box>
+            </CardContent>
+        </Card>
+    )
+}
+
+export { GenerateLists2 };

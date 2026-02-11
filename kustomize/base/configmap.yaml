@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uniselec-admin-config
+data:
+  LOG_LEVEL: "debug"
+  MESSAGE: "Serviço Admin"

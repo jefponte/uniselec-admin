@@ -37,7 +37,7 @@ export interface ConvocationListApplication {
   general_ranking: number;
   category_ranking: number;
   status: "eligible" | "convoked" | "skipped";
-
+  convocation_status?: string;
   /* timestamps ---------------------------------------------------- */
   created_at?: string | null;
   updated_at?: string | null;

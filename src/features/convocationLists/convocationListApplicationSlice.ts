@@ -49,7 +49,7 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
         url: `/convocation_list_applications/${id}/call`,
         method: "POST",
       }),
-      invalidatesTags: ["ConvocationListApplications", "ConvocationListSeats"],
+      invalidatesTags: ["ConvocationListApplications", "ConvocationListSeats", "ConvocationLists"],
     }),
     acceptConvocation: mutation<{ message: string }, { id: string }>({
       query: ({ id }) => ({
