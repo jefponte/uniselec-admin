@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: uniselec-admin
-        image: dti-registro.unilab.edu.br/unilab/uniselec-admin:latest
+        image: harbor.unilab.edu.br/unilab/uniselec-admin:latest
         imagePullPolicy: Always
         resources:
           requests:

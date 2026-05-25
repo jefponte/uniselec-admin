@@ -1,19 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-# Define o namespace para todos os recursos
 namespace: uniselec-admin-dev
-
 resources:
 - ../../base
 - namespace.yaml
-
 patches:
 - path: patch-deployment.yaml
 - path: patch-ingress.yaml
 - path: patch-hpa.yaml
-
-# MERGE com valores específicos de DEVELOPMENT
 configMapGenerator:
 - behavior: merge
   literals:
@@ -22,7 +16,6 @@ configMapGenerator:
   name: uniselec-admin-config
   options:
     disableNameSuffixHash: true
-
 images:
-- name: dti-registro.unilab.edu.br/unilab/uniselec-admin
-  newTag: dev-0148b998
+- name: harbor.unilab.edu.br/unilab/uniselec-admin
+  newTag: dev-fb93f955

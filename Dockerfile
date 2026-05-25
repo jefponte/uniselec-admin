@@ -7,19 +7,19 @@
 #
 # Build instructions:
 #   docker build -f ./Dockerfile \
-#     -t dti-registro.unilab.edu.br/unilab/uniselec-adminunilab:latest \
+#     -t harbor.unilab.edu.br/unilab/uniselec-adminunilab:latest \
 #     --build-arg VERSION=1.0.0 \
 #     --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
 #     --no-cache ./source/
-#   docker push dti-registro.unilab.edu.br/unilab/uniselec-adminunilab:latest
+#   docker push harbor.unilab.edu.br/unilab/uniselec-adminunilab:latest
 #
 # Usage:
 #   docker run -it --rm -d -p 8088:80 --name uniselec-admin \
-#     dti-registro.unilab.edu.br/unilab/uniselec-adminunilab:latest
+#     harbor.unilab.edu.br/unilab/uniselec-adminunilab:latest
 #   docker logs -f --tail --until=2s uniselec-admin
 #   docker exec -it uniselec-admin bash
 #   docker inspect --format='{{json .Config.Labels}}' \
-#     dti-registro.unilab.edu.br/unilab/uniselec-adminunilab:latest | jq .
+#     harbor.unilab.edu.br/unilab/uniselec-adminunilab:latest | jq .
 #
 # Dependencies: node:20-bullseye / nginx:1.24
 #
