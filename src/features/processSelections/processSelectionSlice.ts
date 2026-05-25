@@ -179,6 +179,40 @@ export const processSelectionsApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: [],
     }),
+    getAdmissionCategoryStats: query<
+      { admission_category: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-admission-category?process_selection_id=${processSelectionId}`,
+      providesTags: [], // ou ["Stats"] se quiser invalidar
+    }),
+
+    getCourseStats: query<
+      { course_name: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-course?process_selection_id=${processSelectionId}`,
+      providesTags: [],
+    }),
+
+    getCampusStats: query<
+      { campus_name: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-campus?process_selection_id=${processSelectionId}`,
+      providesTags: [],
+    }),
+    getCourseCategoryStats: query<
+      { course_name: string; admission_category: string; total: number }[],
+      { processSelectionId: string }
+    >({
+      query: ({ processSelectionId }) =>
+        `/stats/by-course-category?process_selection_id=${processSelectionId}`,
+      providesTags: [],
+    }),
   }),
 });
 
@@ -194,4 +228,9 @@ export const {
   useLazyExportEnemScoresCsvQuery,
   useLazyExportEnemOutcomesCsvQuery,
   useLazyExportEnemOutcomesPdfQuery,
+
+  useGetAdmissionCategoryStatsQuery,
+  useGetCourseStatsQuery,
+  useGetCampusStatsQuery,
+  useGetCourseCategoryStatsQuery,
 } = processSelectionsApiSlice;
