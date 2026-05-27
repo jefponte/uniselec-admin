@@ -18,4 +18,4 @@ configMapGenerator:
     disableNameSuffixHash: true
 images:
 - name: harbor.unilab.edu.br/unilab/uniselec-admin
-  newTag: dev-fb93f955
+  newTag: dev-d08a1ba3
