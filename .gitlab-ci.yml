@@ -103,7 +103,7 @@ variables:
   ARGOCD_TLS_MODE: "insecure" # insecure | server-crt
   ARGOCD_SERVER_CRT_B64: ""   # base64 do cert TLS do ArgoCD (quando server-crt)
   # Notificação
-  MAIL_PRD: "erivandosena@gmail.com"
+  MAIL_PRD: "jefponte@unilab.edu.br"
   # Endpoint API
   VITE_API_URL_DEV: https://uniselec-api-development.unilab.edu.br
   VITE_API_URL_STG: https://uniselec-api-staging.unilab.edu.br
